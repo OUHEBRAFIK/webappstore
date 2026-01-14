@@ -2,18 +2,19 @@
 import { db } from "./db";
 import {
   apps,
+  reviews,
   type App,
   type InsertApp,
-  type UpdateAppRequest
+  type Review,
+  type InsertReview
 } from "@shared/schema";
 import { eq, sql, desc } from "drizzle-orm";
 
 export interface IStorage {
   getApps(query?: { search?: string; category?: string; sort?: string }): Promise<App[]>;
-  getApp(id: number): Promise<App | undefined>;
+  getApp(id: number): Promise<(App & { reviews: Review[] }) | undefined>;
   createApp(app: InsertApp): Promise<App>;
-  updateAppRating(id: number, rating: number): Promise<App>;
-  // For admin/seeding
+  createReview(review: InsertReview): Promise<Review>;
   bulkCreateApps(appsList: InsertApp[]): Promise<App[]>;
 }
 
@@ -38,16 +39,24 @@ export class DatabaseStorage implements IStorage {
     }
 
     if (conditions.length > 0) {
-      // @ts-ignore - weird drizzle type issue with dynamic where
+      // @ts-ignore
       return await q.where(sql.join(conditions, sql` AND `)).orderBy(orderBy);
     }
 
     return await q.orderBy(orderBy);
   }
 
-  async getApp(id: number): Promise<App | undefined> {
+  async getApp(id: number): Promise<(App & { reviews: Review[] }) | undefined> {
     const [app] = await db.select().from(apps).where(eq(apps.id, id));
-    return app;
+    if (!app) return undefined;
+    
+    const appReviews = await db
+      .select()
+      .from(reviews)
+      .where(eq(reviews.appId, id))
+      .orderBy(desc(reviews.createdAt));
+      
+    return { ...app, reviews: appReviews };
   }
 
   async createApp(insertApp: InsertApp): Promise<App> {
@@ -55,22 +64,22 @@ export class DatabaseStorage implements IStorage {
     return app;
   }
 
-  async updateAppRating(id: number, newRating: number): Promise<App> {
-    const app = await this.getApp(id);
-    if (!app) throw new Error("App not found");
-
-    // Calculate new average
-    const currentTotal = (app.rating || 0) * (app.votes || 0);
-    const newVotes = (app.votes || 0) + 1;
-    const newAverage = (currentTotal + newRating) / newVotes;
-
-    const [updated] = await db
-      .update(apps)
-      .set({ rating: newAverage, votes: newVotes })
-      .where(eq(apps.id, id))
-      .returning();
+  async createReview(insertReview: InsertReview): Promise<Review> {
+    const [review] = await db.insert(reviews).values(insertReview).returning();
+    
+    // Update app rating and votes
+    const app = await this.getApp(insertReview.appId);
+    if (app) {
+      const currentTotal = (app.rating || 0) * (app.votes || 0);
+      const newVotes = (app.votes || 0) + 1;
+      const newAverage = (currentTotal + insertReview.rating) / newVotes;
       
-    return updated;
+      await db.update(apps)
+        .set({ rating: newAverage, votes: newVotes })
+        .where(eq(apps.id, insertReview.appId));
+    }
+    
+    return review;
   }
 
   async bulkCreateApps(appsList: InsertApp[]): Promise<App[]> {

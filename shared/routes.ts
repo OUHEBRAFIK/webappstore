@@ -1,6 +1,6 @@
 
 import { z } from 'zod';
-import { insertAppSchema, apps, CATEGORIES } from './schema';
+import { insertAppSchema, insertReviewSchema, apps, reviews, CATEGORIES } from './schema';
 
 export const errorSchemas = {
   validation: z.object({
@@ -33,7 +33,7 @@ export const api = {
       method: 'GET' as const,
       path: '/api/apps/:id',
       responses: {
-        200: z.custom<typeof apps.$inferSelect>(),
+        200: z.custom<typeof apps.$inferSelect & { reviews: (typeof reviews.$inferSelect)[] }>(),
         404: errorSchemas.notFound,
       },
     },
@@ -44,15 +44,6 @@ export const api = {
       responses: {
         201: z.custom<typeof apps.$inferSelect>(),
         400: errorSchemas.validation,
-      },
-    },
-    rate: {
-      method: 'POST' as const,
-      path: '/api/apps/:id/rate',
-      input: z.object({ rating: z.number().min(1).max(5) }),
-      responses: {
-        200: z.custom<typeof apps.$inferSelect>(),
-        404: errorSchemas.notFound,
       },
     },
     scrape: {
@@ -67,6 +58,18 @@ export const api = {
         }),
         400: errorSchemas.validation,
       }
+    }
+  },
+  reviews: {
+    create: {
+      method: 'POST' as const,
+      path: '/api/apps/:id/reviews',
+      input: insertReviewSchema.omit({ appId: true }),
+      responses: {
+        201: z.custom<typeof reviews.$inferSelect>(),
+        400: errorSchemas.validation,
+        404: errorSchemas.notFound,
+      },
     }
   },
   admin: {
