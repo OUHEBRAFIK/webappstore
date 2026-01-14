@@ -22,19 +22,22 @@ export default function AppDetails() {
   const [username, setUsername] = useState("");
   const [comment, setComment] = useState("");
 
-  const { data: app, isLoading } = useQuery({
+  const { data: app, isLoading, error } = useQuery({
     queryKey: [api.apps.get.path, id],
     queryFn: async () => {
-      const res = await fetch(buildUrl(api.apps.get.path, { id: id! }));
-      if (!res.ok) throw new Error("App not found");
+      if (!id) throw new Error("ID requis");
+      const res = await fetch(buildUrl(api.apps.get.path, { id }));
+      if (!res.ok) throw new Error("Application introuvable");
       return res.json();
     },
-    enabled: !!id
+    enabled: !!id,
+    retry: false
   });
 
   const reviewMutation = useMutation({
     mutationFn: async () => {
-      const res = await fetch(buildUrl(api.reviews.create.path, { id: id! }), {
+      if (!id) throw new Error("ID requis");
+      const res = await fetch(buildUrl(api.reviews.create.path, { id }), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ rating, username, comment })
@@ -55,28 +58,43 @@ export default function AppDetails() {
     }
   });
 
-  if (isLoading) return (
-    <div className="min-h-screen bg-[#f5f5f7] flex items-center justify-center">
-      <div className="text-slate-400 font-medium animate-pulse">Chargement des données...</div>
-    </div>
-  );
-  
-  if (!app) return (
-    <div className="min-h-screen bg-[#f5f5f7] flex flex-col items-center justify-center gap-4">
-      <div className="text-xl font-bold text-slate-900">Application non trouvée</div>
-      <Link href="/">
-        <Button variant="outline" className="rounded-full">Retour à l'accueil</Button>
-      </Link>
-    </div>
-  );
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-[#f5f5f7] flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+          <p className="text-slate-400 font-medium">Chargement des détails...</p>
+        </div>
+      </div>
+    );
+  }
 
-  const hasReviews = (app.votes || 0) > 0;
-  const hasExternalRating = !hasReviews && (app.rating || 0) > 0;
-  const isNew = !hasReviews && !hasExternalRating;
+  if (error || !app) {
+    return (
+      <div className="min-h-screen bg-[#f5f5f7] flex flex-col items-center justify-center gap-6 p-4 text-center">
+        <div className="text-6xl mb-2">🚫</div>
+        <h2 className="text-2xl font-bold text-slate-900">Application introuvable</h2>
+        <p className="text-slate-500 max-w-md">L'application que vous recherchez n'existe pas ou a été supprimée.</p>
+        <Link href="/">
+          <Button className="rounded-full px-8 h-12 font-bold shadow-lg">Retour à l'accueil</Button>
+        </Link>
+      </div>
+    );
+  }
+
+  const votes = Number(app.votes) || 0;
+  const hasCommunityReviews = votes > 0;
+  const externalRating = Number(app.externalRating) || 0;
+  const communityRating = Number(app.rating) || 0;
+  
+  const hasAnyRating = hasCommunityReviews || externalRating > 0;
+  const isNew = !hasAnyRating;
+  
+  const displayRating = hasCommunityReviews ? communityRating : externalRating;
   
   let hostname = "link";
   try {
-    hostname = new URL(app.url).hostname;
+    if (app.url) hostname = new URL(app.url).hostname;
   } catch(e) {}
 
   return (
@@ -98,12 +116,15 @@ export default function AppDetails() {
             <Card className="p-8 rounded-[2.5rem] border-none shadow-sm bg-white text-center">
               <img 
                 src={`https://www.google.com/s2/favicons?domain=${hostname}&sz=128`}
-                alt={app.name}
+                alt={app.name || "App"}
                 className="w-24 h-24 rounded-[1.5rem] mx-auto mb-4 shadow-md bg-white p-2"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = "https://www.google.com/s2/favicons?domain=replit.com&sz=128";
+                }}
               />
-              <h2 className="text-2xl font-bold mb-2 tracking-tight">{app.name}</h2>
-              <p className="text-sm text-slate-500 mb-6 leading-relaxed">{app.description}</p>
-              <Button className="w-full rounded-2xl h-12 font-bold" onClick={() => window.open(app.url, '_blank')}>
+              <h2 className="text-2xl font-bold mb-2 tracking-tight">{app.name || "App"}</h2>
+              <p className="text-sm text-slate-500 mb-6 leading-relaxed">{app.description || "Aucune description."}</p>
+              <Button className="w-full rounded-2xl h-12 font-bold" onClick={() => app.url && window.open(app.url, '_blank')}>
                 Ouvrir l'application
               </Button>
               
@@ -118,18 +139,18 @@ export default function AppDetails() {
                 ) : (
                   <>
                     <div className="text-5xl font-black text-slate-900 tracking-tighter">
-                      {(Number(app.rating) || 0).toFixed(1)}
+                      {displayRating.toFixed(1)}
                     </div>
                     <div className="flex justify-center my-3 gap-0.5">
                       {[1,2,3,4,5].map(s => (
-                        <Star key={s} size={18} className={s <= Math.round(Number(app.rating) || 0) ? "fill-yellow-400 text-yellow-400" : "text-slate-100"} />
+                        <Star key={s} size={18} className={s <= Math.round(displayRating) ? "fill-yellow-400 text-yellow-400" : "text-slate-100"} />
                       ))}
                     </div>
                     <div className="flex flex-col items-center gap-1">
                       <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                        {hasReviews ? "Note Communauté" : "Score Global"}
+                        {hasCommunityReviews ? "Note Communauté" : "Score Global"}
                       </span>
-                      <div className="text-xs font-bold text-slate-300">{app.votes || 0} avis</div>
+                      <div className="text-xs font-bold text-slate-300">{votes} avis</div>
                     </div>
                   </>
                 )}
@@ -208,10 +229,10 @@ export default function AppDetails() {
                       <Card className="p-6 rounded-3xl border-none shadow-sm bg-white">
                         <div className="flex justify-between items-start mb-3">
                           <div>
-                            <span className="font-bold text-slate-900 block">{r.username}</span>
+                            <span className="font-bold text-slate-900 block">{r.username || "Anonyme"}</span>
                             <div className="flex gap-0.5 mt-1">
                               {[1,2,3,4,5].map(s => (
-                                <Star key={s} size={10} className={s <= r.rating ? "fill-yellow-400 text-yellow-400" : "text-slate-100"} />
+                                <Star key={s} size={10} className={s <= (Number(r.rating) || 0) ? "fill-yellow-400 text-yellow-400" : "text-slate-100"} />
                               ))}
                             </div>
                           </div>
@@ -219,7 +240,7 @@ export default function AppDetails() {
                             {r.createdAt ? format(new Date(r.createdAt), "d MMMM yyyy", { locale: fr }) : ""}
                           </span>
                         </div>
-                        <p className="text-sm leading-relaxed text-slate-600 font-medium">{r.comment}</p>
+                        <p className="text-sm leading-relaxed text-slate-600 font-medium">{r.comment || ""}</p>
                       </Card>
                     </motion.div>
                   ))}

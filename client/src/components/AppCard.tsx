@@ -17,20 +17,24 @@ const categoryColors: Record<string, string> = {
 };
 
 export function AppCard({ app }: { app: App }) {
-  if (!app || !app.url) return null;
+  if (!app || !app.id) return null;
   
-  let hostname = "";
+  let hostname = "link";
   try {
-    hostname = new URL(app.url).hostname;
+    if (app.url) {
+      hostname = new URL(app.url).hostname;
+    }
   } catch (e) {
-    hostname = "link";
+    console.error("Invalid URL:", app.url);
   }
   
-  const hasReviews = (app.votes || 0) > 0;
-  // Note communautaire is app.rating if it has votes
-  // Score global is app.rating if it has NO votes but rating > 0
-  const hasExternalRating = !hasReviews && (app.rating || 0) > 0;
-  const isNew = !hasReviews && !hasExternalRating;
+  const votes = Number(app.votes) || 0;
+  const hasCommunityReviews = votes > 0;
+  const externalRating = Number(app.externalRating) || 0;
+  const communityRating = Number(app.rating) || 0;
+  
+  const hasAnyRating = hasCommunityReviews || externalRating > 0;
+  const isNew = !hasAnyRating;
 
   return (
     <motion.div
@@ -48,17 +52,20 @@ export function AppCard({ app }: { app: App }) {
               <div className="absolute inset-0 bg-black/5 blur-xl rounded-full scale-75 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <img 
                 src={`https://www.google.com/s2/favicons?domain=${hostname}&sz=128`}
-                alt={app.name}
+                alt={app.name || "App"}
                 className="w-24 h-24 rounded-[1.5rem] shadow-sm relative z-10 bg-white p-2"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = "https://www.google.com/s2/favicons?domain=replit.com&sz=128";
+                }}
               />
-              <Badge className={`absolute -top-3 -right-3 border shadow-sm text-[10px] font-semibold px-3 py-1 rounded-full ${categoryColors[app.category] || categoryColors.Other}`}>
-                {app.category}
+              <Badge className={`absolute -top-3 -right-3 border shadow-sm text-[10px] font-semibold px-3 py-1 rounded-full ${categoryColors[app.category || "Other"]}`}>
+                {app.category || "Other"}
               </Badge>
             </div>
             
-            <h3 className="font-bold text-xl mb-2 tracking-tight text-slate-900 group-hover:text-primary transition-colors">{app.name}</h3>
+            <h3 className="font-bold text-xl mb-2 tracking-tight text-slate-900 group-hover:text-primary transition-colors">{app.name || "Application"}</h3>
             <p className="text-sm text-slate-500 leading-relaxed line-clamp-2 mb-6 px-2">
-              {app.description}
+              {app.description || "Aucune description disponible."}
             </p>
             
             <div className="mt-auto flex flex-col items-center gap-4 w-full">
@@ -71,17 +78,19 @@ export function AppCard({ app }: { app: App }) {
                   <div className="flex flex-col items-start gap-0.5">
                     <div className="flex items-center gap-1.5 bg-slate-50 px-2.5 py-1 rounded-full">
                       <Star size={12} className="fill-yellow-400 text-yellow-400" />
-                      <span className="text-xs font-bold text-slate-700">{(Number(app.rating) || 0).toFixed(1)}</span>
+                      <span className="text-xs font-bold text-slate-700">
+                        {(hasCommunityReviews ? communityRating : externalRating).toFixed(1)}
+                      </span>
                     </div>
                     <span className="text-[9px] font-bold text-slate-400 uppercase tracking-tight ml-1">
-                      {hasReviews ? "Note Communauté" : "Score Global"}
+                      {hasCommunityReviews ? "Note Communauté" : "Score Global"}
                     </span>
                   </div>
                 )}
                 
                 {!isNew && (
                   <div className="text-[10px] font-bold text-slate-300">
-                    {app.votes || 0} avis
+                    {votes} avis
                   </div>
                 )}
               </div>

@@ -21,6 +21,7 @@ export const apps = pgTable("apps", {
   url: text("url").notNull(),
   category: text("category", { enum: CATEGORIES }).notNull(),
   iconUrl: text("icon_url"),
+  externalRating: real("external_rating").default(0),
   rating: real("rating").default(0),
   votes: integer("votes").default(0),
   isApproved: boolean("is_approved").default(true),
