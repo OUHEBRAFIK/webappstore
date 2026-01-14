@@ -2,7 +2,7 @@
 import { App } from "@shared/schema";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Star, MessageSquare, ArrowUpRight } from "lucide-react";
+import { Star, MessageSquare, ArrowUpRight, Sparkles } from "lucide-react";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
 
@@ -19,6 +19,10 @@ const categoryColors: Record<string, string> = {
 export function AppCard({ app }: { app: App }) {
   const hostname = new URL(app.url).hostname;
   
+  const hasReviews = (app.votes || 0) > 0;
+  const hasExternalRating = !hasReviews && (app.rating || 0) > 0;
+  const isNew = !hasReviews && !hasExternalRating;
+
   return (
     <motion.div
       layout
@@ -50,13 +54,27 @@ export function AppCard({ app }: { app: App }) {
             
             <div className="mt-auto flex flex-col items-center gap-4 w-full">
               <div className="flex items-center justify-between w-full px-2">
-                <div className="flex items-center gap-1.5 bg-slate-50 px-3 py-1.5 rounded-full">
-                  <Star size={14} className="fill-yellow-400 text-yellow-400" />
-                  <span className="text-sm font-bold text-slate-700">{(app.rating || 0).toFixed(1)}</span>
-                </div>
-                <div className="text-xs font-medium text-slate-400">
-                  {app.votes} avis
-                </div>
+                {isNew ? (
+                  <Badge className="bg-primary/5 text-primary border-primary/10 flex items-center gap-1 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">
+                    <Sparkles size={10} /> Nouveau
+                  </Badge>
+                ) : (
+                  <div className="flex flex-col items-start gap-0.5">
+                    <div className="flex items-center gap-1.5 bg-slate-50 px-2.5 py-1 rounded-full">
+                      <Star size={12} className="fill-yellow-400 text-yellow-400" />
+                      <span className="text-xs font-bold text-slate-700">{(app.rating || 0).toFixed(1)}</span>
+                    </div>
+                    <span className="text-[9px] font-bold text-slate-400 uppercase tracking-tight ml-1">
+                      {hasReviews ? "Note Communauté" : "Score Global"}
+                    </span>
+                  </div>
+                )}
+                
+                {!isNew && (
+                  <div className="text-[10px] font-bold text-slate-300">
+                    {app.votes} avis
+                  </div>
+                )}
               </div>
               
               <div className="flex items-center gap-1 text-[11px] font-bold text-slate-300 group-hover:text-primary transition-all uppercase tracking-[0.1em]">
