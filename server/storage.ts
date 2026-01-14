@@ -24,7 +24,7 @@ export class DatabaseStorage implements IStorage {
     const conditions = [];
 
     if (query?.category) {
-      conditions.push(eq(apps.category, query.category));
+      conditions.push(eq(apps.category, query.category as any));
     }
 
     if (query?.search) {
@@ -39,7 +39,6 @@ export class DatabaseStorage implements IStorage {
     }
 
     if (conditions.length > 0) {
-      // @ts-ignore
       return await q.where(sql.join(conditions, sql` AND `)).orderBy(orderBy);
     }
 
