@@ -15,6 +15,7 @@ import { queryClient } from "@/lib/queryClient";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { motion } from "framer-motion";
+import { useEffect } from "react";
 
 export default function AppDetails() {
   const { id } = useParams();
@@ -35,6 +36,16 @@ export default function AppDetails() {
     enabled: !!id,
     retry: false
   });
+
+  useEffect(() => {
+    if (app) {
+      document.title = `${app.name} - Avis et détails | WebStore Central`;
+      const metaDesc = document.querySelector('meta[name="description"]');
+      if (metaDesc) {
+        metaDesc.setAttribute("content", `Découvrez ${app.name} : ${app.description}. Consultez les avis de la communauté et explorez cet outil web.`);
+      }
+    }
+  }, [app]);
 
   const reviewMutation = useMutation({
     mutationFn: async () => {

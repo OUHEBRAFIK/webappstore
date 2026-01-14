@@ -25,7 +25,7 @@ export function AppCard({ app }: { app: App }) {
       hostname = new URL(app.url).hostname;
     }
   } catch (e) {
-    console.error("Invalid URL:", app.url);
+    // console.error handled silently
   }
   
   const votes = Number(app.votes) || 0;

@@ -15,13 +15,13 @@ export function CategoryFilters({
   onRatingSelect: (r: number | undefined) => void
 }) {
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 w-full">
       <div className="space-y-3">
         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-2">Catégories</p>
-        <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar px-1">
+        <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar px-1 -mx-1 scroll-smooth">
           <Badge 
             variant={!active ? "default" : "outline"}
-            className="cursor-pointer px-5 py-2 rounded-full border-none shadow-sm transition-all hover:scale-105 active:scale-95"
+            className="cursor-pointer px-5 py-2 rounded-full border-none shadow-sm transition-all hover:scale-105 active:scale-95 shrink-0"
             onClick={() => onSelect(undefined)}
           >
             Tout
@@ -30,7 +30,7 @@ export function CategoryFilters({
             <Badge 
               key={c}
               variant={active === c ? "default" : "outline"}
-              className={`cursor-pointer px-5 py-2 rounded-full border-none shadow-sm transition-all hover:scale-105 active:scale-95 whitespace-nowrap ${
+              className={`cursor-pointer px-5 py-2 rounded-full border-none shadow-sm transition-all hover:scale-105 active:scale-95 whitespace-nowrap shrink-0 ${
                 active === c ? "" : "bg-white hover:bg-slate-50"
               }`}
               onClick={() => onSelect(c)}
@@ -43,12 +43,12 @@ export function CategoryFilters({
 
       <div className="space-y-3">
         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-2">Note Minimale</p>
-        <div className="flex gap-2">
+        <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar px-1 -mx-1">
           {[undefined, 4, 3].map(r => (
             <Badge
               key={String(r)}
               variant={activeRating === r ? "default" : "outline"}
-              className={`cursor-pointer px-5 py-2 rounded-full border-none shadow-sm transition-all hover:scale-105 active:scale-95 flex items-center gap-1.5 ${
+              className={`cursor-pointer px-5 py-2 rounded-full border-none shadow-sm transition-all hover:scale-105 active:scale-95 flex items-center gap-1.5 shrink-0 ${
                 activeRating === r ? "" : "bg-white hover:bg-slate-50"
               }`}
               onClick={() => onRatingSelect(r)}
