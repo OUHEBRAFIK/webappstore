@@ -17,9 +17,18 @@ const categoryColors: Record<string, string> = {
 };
 
 export function AppCard({ app }: { app: App }) {
-  const hostname = new URL(app.url).hostname;
+  if (!app || !app.url) return null;
+  
+  let hostname = "";
+  try {
+    hostname = new URL(app.url).hostname;
+  } catch (e) {
+    hostname = "link";
+  }
   
   const hasReviews = (app.votes || 0) > 0;
+  // Note communautaire is app.rating if it has votes
+  // Score global is app.rating if it has NO votes but rating > 0
   const hasExternalRating = !hasReviews && (app.rating || 0) > 0;
   const isNew = !hasReviews && !hasExternalRating;
 
@@ -62,7 +71,7 @@ export function AppCard({ app }: { app: App }) {
                   <div className="flex flex-col items-start gap-0.5">
                     <div className="flex items-center gap-1.5 bg-slate-50 px-2.5 py-1 rounded-full">
                       <Star size={12} className="fill-yellow-400 text-yellow-400" />
-                      <span className="text-xs font-bold text-slate-700">{(app.rating || 0).toFixed(1)}</span>
+                      <span className="text-xs font-bold text-slate-700">{(Number(app.rating) || 0).toFixed(1)}</span>
                     </div>
                     <span className="text-[9px] font-bold text-slate-400 uppercase tracking-tight ml-1">
                       {hasReviews ? "Note Communauté" : "Score Global"}
@@ -72,7 +81,7 @@ export function AppCard({ app }: { app: App }) {
                 
                 {!isNew && (
                   <div className="text-[10px] font-bold text-slate-300">
-                    {app.votes} avis
+                    {app.votes || 0} avis
                   </div>
                 )}
               </div>

@@ -26,8 +26,10 @@ export default function AppDetails() {
     queryKey: [api.apps.get.path, id],
     queryFn: async () => {
       const res = await fetch(buildUrl(api.apps.get.path, { id: id! }));
+      if (!res.ok) throw new Error("App not found");
       return res.json();
-    }
+    },
+    enabled: !!id
   });
 
   const reviewMutation = useMutation({
@@ -53,12 +55,29 @@ export default function AppDetails() {
     }
   });
 
-  if (isLoading) return <div className="p-8 text-center">Chargement...</div>;
-  if (!app) return <div className="p-8 text-center">App non trouvée</div>;
+  if (isLoading) return (
+    <div className="min-h-screen bg-[#f5f5f7] flex items-center justify-center">
+      <div className="text-slate-400 font-medium animate-pulse">Chargement des données...</div>
+    </div>
+  );
+  
+  if (!app) return (
+    <div className="min-h-screen bg-[#f5f5f7] flex flex-col items-center justify-center gap-4">
+      <div className="text-xl font-bold text-slate-900">Application non trouvée</div>
+      <Link href="/">
+        <Button variant="outline" className="rounded-full">Retour à l'accueil</Button>
+      </Link>
+    </div>
+  );
 
   const hasReviews = (app.votes || 0) > 0;
   const hasExternalRating = !hasReviews && (app.rating || 0) > 0;
   const isNew = !hasReviews && !hasExternalRating;
+  
+  let hostname = "link";
+  try {
+    hostname = new URL(app.url).hostname;
+  } catch(e) {}
 
   return (
     <div className="min-h-screen bg-[#f5f5f7] pb-12">
@@ -78,7 +97,7 @@ export default function AppDetails() {
           <div className="md:col-span-1">
             <Card className="p-8 rounded-[2.5rem] border-none shadow-sm bg-white text-center">
               <img 
-                src={`https://www.google.com/s2/favicons?domain=${new URL(app.url).hostname}&sz=128`}
+                src={`https://www.google.com/s2/favicons?domain=${hostname}&sz=128`}
                 alt={app.name}
                 className="w-24 h-24 rounded-[1.5rem] mx-auto mb-4 shadow-md bg-white p-2"
               />
@@ -94,23 +113,23 @@ export default function AppDetails() {
                     <Badge className="bg-primary/5 text-primary border-primary/10 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest">
                       <Sparkles size={12} className="mr-1" /> Nouveau
                     </Badge>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Soyez le premier à noter !</p>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Pas encore d'avis</p>
                   </div>
                 ) : (
                   <>
                     <div className="text-5xl font-black text-slate-900 tracking-tighter">
-                      {(app.rating || 0).toFixed(1)}
+                      {(Number(app.rating) || 0).toFixed(1)}
                     </div>
                     <div className="flex justify-center my-3 gap-0.5">
                       {[1,2,3,4,5].map(s => (
-                        <Star key={s} size={18} className={s <= Math.round(app.rating || 0) ? "fill-yellow-400 text-yellow-400" : "text-slate-100"} />
+                        <Star key={s} size={18} className={s <= Math.round(Number(app.rating) || 0) ? "fill-yellow-400 text-yellow-400" : "text-slate-100"} />
                       ))}
                     </div>
                     <div className="flex flex-col items-center gap-1">
                       <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
                         {hasReviews ? "Note Communauté" : "Score Global"}
                       </span>
-                      <div className="text-xs font-bold text-slate-300">{app.votes} avis</div>
+                      <div className="text-xs font-bold text-slate-300">{app.votes || 0} avis</div>
                     </div>
                   </>
                 )}
@@ -173,14 +192,14 @@ export default function AppDetails() {
 
             <div className="space-y-6 px-2">
               <h3 className="text-xl font-bold tracking-tight">Avis des utilisateurs</h3>
-              {app.reviews?.length === 0 ? (
+              {(!app.reviews || app.reviews.length === 0) ? (
                 <Card className="p-12 rounded-[2.5rem] border-2 border-dashed border-slate-100 bg-transparent text-center">
                   <div className="text-4xl mb-4 opacity-20">💬</div>
                   <p className="text-slate-400 font-medium italic">Aucun avis pour le moment. Soyez le premier !</p>
                 </Card>
               ) : (
                 <div className="space-y-4">
-                  {app.reviews?.map((r: any) => (
+                  {app.reviews.map((r: any) => (
                     <motion.div
                       key={r.id}
                       initial={{ opacity: 0, x: -10 }}
@@ -197,7 +216,7 @@ export default function AppDetails() {
                             </div>
                           </div>
                           <span className="text-[9px] font-bold text-slate-300 uppercase tracking-widest">
-                            {format(new Date(r.createdAt), "d MMMM yyyy", { locale: fr })}
+                            {r.createdAt ? format(new Date(r.createdAt), "d MMMM yyyy", { locale: fr }) : ""}
                           </span>
                         </div>
                         <p className="text-sm leading-relaxed text-slate-600 font-medium">{r.comment}</p>
