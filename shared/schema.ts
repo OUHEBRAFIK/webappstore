@@ -5,13 +5,13 @@ import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
 export const CATEGORIES = [
-  "AI",
-  "Productivity",
+  "IA",
+  "Productivité",
   "Design",
-  "Games",
-  "Development",
+  "Jeux",
+  "Développement",
   "Social",
-  "Other"
+  "Autre"
 ] as const;
 
 export const apps = pgTable("apps", {

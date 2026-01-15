@@ -59,7 +59,7 @@ function AdminDashboard() {
     url: "",
     name: "",
     description: "",
-    category: "Other",
+    category: "Autre",
     iconUrl: ""
   });
   const [loading, setLoading] = useState(false);

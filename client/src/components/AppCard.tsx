@@ -7,13 +7,13 @@ import { Link } from "wouter";
 import { motion } from "framer-motion";
 
 const categoryColors: Record<string, string> = {
-  "AI": "bg-blue-50 text-blue-600 border-blue-100",
-  "Productivity": "bg-emerald-50 text-emerald-600 border-emerald-100",
+  "IA": "bg-blue-50 text-blue-600 border-blue-100",
+  "Productivité": "bg-emerald-50 text-emerald-600 border-emerald-100",
   "Design": "bg-purple-50 text-purple-600 border-purple-100",
-  "Games": "bg-orange-50 text-orange-600 border-orange-100",
-  "Development": "bg-indigo-50 text-indigo-600 border-indigo-100",
+  "Jeux": "bg-orange-50 text-orange-600 border-orange-100",
+  "Développement": "bg-indigo-50 text-indigo-600 border-indigo-100",
   "Social": "bg-rose-50 text-rose-600 border-rose-100",
-  "Other": "bg-slate-50 text-slate-600 border-slate-100",
+  "Autre": "bg-slate-50 text-slate-600 border-slate-100",
 };
 
 export function AppCard({ app }: { app: App }) {
