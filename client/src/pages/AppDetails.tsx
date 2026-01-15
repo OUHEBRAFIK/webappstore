@@ -127,14 +127,24 @@ export default function AppDetails() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="md:col-span-1">
             <Card className="p-8 rounded-[1.5rem] border-none shadow-[0_4px_12px_rgba(0,0,0,0.02)] bg-white text-center">
-              <img 
-                src={`https://www.google.com/s2/favicons?domain=${hostname}&sz=128`}
-                alt={app.name || "App"}
-                className="w-24 h-24 rounded-[1.5rem] mx-auto mb-4 shadow-sm bg-white p-2"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = "https://www.google.com/s2/favicons?domain=replit.com&sz=128";
-                }}
-              />
+              <div className="w-24 h-24 rounded-[1.5rem] mx-auto mb-4 shadow-sm bg-white flex items-center justify-center overflow-hidden">
+                <img 
+                  src={`https://www.google.com/s2/favicons?domain=${hostname}&sz=128`}
+                  alt={app.name || "App"}
+                  className="w-full h-full p-2 object-contain"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    const parent = target.parentElement;
+                    if (parent) {
+                      target.style.display = 'none';
+                      const fallback = document.createElement('div');
+                      fallback.className = "w-full h-full flex items-center justify-center bg-primary/5 text-primary text-4xl font-bold uppercase tracking-tighter";
+                      fallback.innerText = (app.name || "?").charAt(0);
+                      parent.appendChild(fallback);
+                    }
+                  }}
+                />
+              </div>
               <h2 className="text-2xl font-bold mb-2 tracking-tight">{app.name || "App"}</h2>
               <p className="text-sm text-slate-500 mb-6 leading-relaxed">{app.description || "Aucune description."}</p>
               <Button className="w-full rounded-2xl h-12 font-bold shadow-lg shadow-primary/20 transition-all active:scale-95" onClick={() => app.url && window.open(app.url, '_blank')}>

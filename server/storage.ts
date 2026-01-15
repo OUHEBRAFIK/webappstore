@@ -24,7 +24,7 @@ export class DatabaseStorage implements IStorage {
     const conditions = [];
 
     if (query?.category) {
-      conditions.push(eq(apps.category, query.category as any));
+      conditions.push(sql`lower(trim(${apps.category})) = ${query.category.toLowerCase().trim()}`);
     }
 
     if (query?.search) {

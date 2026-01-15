@@ -38,8 +38,22 @@ export async function registerRoutes(
         category: req.query.category as string,
         sort: req.query.sort as string,
       };
-      const apps = await storage.getApps(query);
-      res.json(apps);
+      
+      const appsList = await storage.getApps(query);
+      
+      // Calculate category counts based on current filters (except the category filter itself)
+      const allApps = await storage.getApps({ search: query.search });
+      const counts: Record<string, number> = {};
+      allApps.forEach(app => {
+        const cat = app.category || "Autre";
+        counts[cat] = (counts[cat] || 0) + 1;
+      });
+
+      res.json({
+        apps: appsList,
+        counts,
+        total: allApps.length
+      });
     } catch (e) {
       res.status(500).json({ message: "Internal server error" });
     }

@@ -22,7 +22,7 @@ export default function Home() {
     }
   }, []);
 
-  const { data: apps, isLoading } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: [api.apps.list.path, search, category],
     queryFn: async () => {
       const url = new URL(api.apps.list.path, window.location.origin);
@@ -32,6 +32,9 @@ export default function Home() {
       return res.json();
     }
   });
+
+  const apps = data?.apps || [];
+  const categoryCounts = data?.counts || {};
 
   const filteredApps = useMemo(() => {
     if (!apps) return [];
@@ -80,6 +83,7 @@ export default function Home() {
                 onSelect={setCategory} 
                 activeRating={minRating}
                 onRatingSelect={setMinRating}
+                counts={categoryCounts}
               />
             </div>
           </aside>

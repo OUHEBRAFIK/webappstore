@@ -7,12 +7,14 @@ export function CategoryFilters({
   active, 
   onSelect,
   activeRating,
-  onRatingSelect
+  onRatingSelect,
+  counts = {}
 }: { 
   active?: string, 
   onSelect: (c: string | undefined) => void,
   activeRating?: number,
-  onRatingSelect: (r: number | undefined) => void
+  onRatingSelect: (r: number | undefined) => void,
+  counts?: Record<string, number>
 }) {
   return (
     <div className="flex flex-col gap-6 w-full">
@@ -35,7 +37,7 @@ export function CategoryFilters({
               }`}
               onClick={() => onSelect(c)}
             >
-              {c}
+              {c} <span className="ml-1.5 opacity-50 text-[10px]">{counts[c] || 0}</span>
             </Badge>
           ))}
         </div>

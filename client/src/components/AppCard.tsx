@@ -50,16 +50,26 @@ export function AppCard({ app }: { app: App }) {
           <div className="p-8 flex flex-col items-center text-center flex-1">
             <div className="relative mb-6">
               <div className="absolute inset-0 bg-black/5 blur-xl rounded-full scale-75 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              <motion.img 
-                src={`https://www.google.com/s2/favicons?domain=${hostname}&sz=128`}
-                alt={app.name || "App"}
-                className="w-24 h-24 rounded-[1.5rem] shadow-sm relative z-10 bg-white p-2"
-                whileHover={{ scale: 1.1, rotate: 2 }}
-                transition={{ type: "spring", stiffness: 300, damping: 15 }}
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = "https://www.google.com/s2/favicons?domain=replit.com&sz=128";
-                }}
-              />
+              <div className="w-24 h-24 rounded-[1.5rem] shadow-sm relative z-10 bg-white flex items-center justify-center overflow-hidden">
+                <motion.img 
+                  src={`https://www.google.com/s2/favicons?domain=${hostname}&sz=128`}
+                  alt={app.name || "App"}
+                  className="w-full h-full p-2 object-contain"
+                  whileHover={{ scale: 1.1, rotate: 2 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 15 }}
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    const parent = target.parentElement;
+                    if (parent) {
+                      target.style.display = 'none';
+                      const fallback = document.createElement('div');
+                      fallback.className = "w-full h-full flex items-center justify-center bg-primary/5 text-primary text-3xl font-bold uppercase tracking-tighter";
+                      fallback.innerText = (app.name || "?").charAt(0);
+                      parent.appendChild(fallback);
+                    }
+                  }}
+                />
+              </div>
               <Badge className={`absolute -top-3 -right-3 border shadow-sm text-[10px] font-semibold px-3 py-1 rounded-full ${categoryColors[app.category || "Other"]}`}>
                 {app.category || "Other"}
               </Badge>
