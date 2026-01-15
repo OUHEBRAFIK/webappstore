@@ -10,8 +10,9 @@ export const CATEGORIES = [
   "Design",
   "Jeux",
   "Développement",
-  "Social",
-  "Utilitaires"
+  "Réseaux Sociaux",
+  "Outils",
+  "Divers"
 ] as const;
 
 export const apps = pgTable("apps", {
