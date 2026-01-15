@@ -51,11 +51,6 @@ export default function Home() {
             <Link href="/" className="text-2xl sm:text-3xl font-black tracking-tight bg-gradient-to-r from-slate-900 via-primary to-slate-600 bg-[length:200%_auto] animate-gradient bg-clip-text text-transparent">
               WebAppStore
             </Link>
-            <div className="sm:hidden">
-              <Link href="/submit">
-                <Button size="sm" className="rounded-full h-9 font-bold">Soumettre</Button>
-              </Link>
-            </div>
           </div>
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
@@ -65,13 +60,7 @@ export default function Home() {
           >
             <SearchBar value={search} onChange={setSearch} />
           </motion.div>
-          <div className="hidden sm:flex items-center gap-4">
-            <Link href="/submit">
-              <Button className="rounded-full px-6 h-11 font-bold shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all active:scale-95">
-                Soumettre une App
-              </Button>
-            </Link>
-          </div>
+          <div className="hidden sm:block" />
         </div>
       </header>
 
