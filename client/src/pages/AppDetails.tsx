@@ -1,21 +1,31 @@
-
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useParams, Link } from "wouter";
 import { api, buildUrl } from "@shared/routes";
-import { Star, ArrowLeft, Send, Sparkles } from "lucide-react";
+import { Star, ArrowLeft, Send, Sparkles, ExternalLink, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient } from "@/lib/queryClient";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { motion } from "framer-motion";
-import { useEffect } from "react";
+import { ThemeToggle } from "@/components/ThemeToggle";
+
+const categoryColors: Record<string, string> = {
+  "IA": "bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-300",
+  "Productivité": "bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-300",
+  "Design": "bg-purple-100 dark:bg-purple-900/50 text-purple-600 dark:text-purple-300",
+  "Jeux": "bg-orange-100 dark:bg-orange-900/50 text-orange-600 dark:text-orange-300",
+  "Développement": "bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-300",
+  "Réseaux Sociaux": "bg-rose-100 dark:bg-rose-900/50 text-rose-600 dark:text-rose-300",
+  "Outils": "bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-300",
+  "Divers": "bg-slate-100 dark:bg-slate-800/50 text-slate-600 dark:text-slate-300",
+};
 
 export default function AppDetails() {
   const { id } = useParams();
@@ -39,10 +49,10 @@ export default function AppDetails() {
 
   useEffect(() => {
     if (app) {
-      document.title = `${app.name} - Avis et détails | WebAppStore`;
+      document.title = `${app.name} - Avis et details | WebAppStore`;
       const metaDesc = document.querySelector('meta[name="description"]');
       if (metaDesc) {
-        metaDesc.setAttribute("content", `Découvrez ${app.name} : ${app.description}. Consultez les avis de la communauté et explorez cet outil web.`);
+        metaDesc.setAttribute("content", `Decouvrez ${app.name} : ${app.description}. Consultez les avis de la communaute.`);
       }
     }
   }, [app]);
@@ -61,7 +71,7 @@ export default function AppDetails() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [api.apps.get.path, id] });
       queryClient.invalidateQueries({ queryKey: [api.apps.list.path] });
-      toast({ title: "Avis publié", description: "Merci pour votre retour !" });
+      toast({ title: "Avis publie", description: "Merci pour votre retour !" });
       setRating(0);
       setUsername("");
       setComment("");
@@ -73,10 +83,10 @@ export default function AppDetails() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#f5f5f7] flex items-center justify-center">
+      <div className="min-h-screen bg-background mesh-gradient flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <div className="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
-          <p className="text-slate-400 font-medium">Chargement des détails...</p>
+          <p className="text-muted-foreground font-medium">Chargement des details...</p>
         </div>
       </div>
     );
@@ -84,12 +94,14 @@ export default function AppDetails() {
 
   if (error || !app) {
     return (
-      <div className="min-h-screen bg-[#f5f5f7] flex flex-col items-center justify-center gap-6 p-4 text-center">
-        <div className="text-6xl mb-2">🚫</div>
-        <h2 className="text-2xl font-bold text-slate-900">Application introuvable</h2>
-        <p className="text-slate-500 max-w-md">L'application que vous recherchez n'existe pas ou a été supprimée.</p>
+      <div className="min-h-screen bg-background mesh-gradient flex flex-col items-center justify-center gap-6 p-4 text-center">
+        <div className="w-20 h-20 rounded-full bg-destructive/10 flex items-center justify-center">
+          <span className="text-4xl">X</span>
+        </div>
+        <h2 className="text-2xl font-bold text-foreground">Application introuvable</h2>
+        <p className="text-muted-foreground max-w-md">L'application que vous recherchez n'existe pas ou a ete supprimee.</p>
         <Link href="/">
-          <Button className="rounded-full px-8 h-12 font-bold shadow-lg">Retour à l'accueil</Button>
+          <Button className="rounded-full px-8 h-12 font-bold shadow-lg" data-testid="button-back-home">Retour a l'accueil</Button>
         </Link>
       </div>
     );
@@ -116,27 +128,34 @@ export default function AppDetails() {
     : `https://www.google.com/s2/favicons?domain=${hostname}&sz=128`;
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <header className="bg-white/80 backdrop-blur-md border-b sticky top-0 z-50">
-        <div className="max-w-4xl mx-auto px-4 h-16 flex items-center gap-4">
-          <Link href="/">
-            <Button variant="ghost" size="icon" className="rounded-full">
-              <ArrowLeft size={20} />
-            </Button>
-          </Link>
-          <h1 className="font-bold text-xl">{app.name}</h1>
+    <div className="min-h-screen bg-background mesh-gradient flex flex-col">
+      <header className="bg-background/80 dark:bg-background/90 backdrop-blur-xl border-b border-border sticky top-0 z-50">
+        <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <Link href="/">
+              <Button variant="ghost" size="icon" className="rounded-full" data-testid="button-back">
+                <ArrowLeft size={20} />
+              </Button>
+            </Link>
+            <h1 className="font-bold text-xl text-foreground">{app.name}</h1>
+          </div>
+          <ThemeToggle />
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-4 mt-8 flex-1 mb-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="md:col-span-1">
-            <Card className="p-8 rounded-[1.5rem] border-none shadow-[0_4px_12px_rgba(0,0,0,0.02)] bg-white text-center">
-              <div className="w-24 h-24 rounded-[1.5rem] mx-auto mb-4 shadow-sm bg-white flex items-center justify-center overflow-hidden">
+      <main className="max-w-5xl mx-auto px-4 py-8 flex-1 w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="lg:col-span-4"
+          >
+            <Card className="p-8 rounded-[24px] border-0 bento-card text-center sticky top-24">
+              <div className="w-28 h-28 rounded-[24px] mx-auto mb-5 shadow-lg bg-background dark:bg-card flex items-center justify-center overflow-hidden border border-border/30">
                 <img 
                   src={logoUrl}
                   alt={app.name || "App"}
-                  className="w-full h-full p-2 object-contain"
+                  className="w-full h-full p-3 object-contain"
                   onError={(e) => {
                     if (!isWhatsApp) {
                       e.currentTarget.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(app.name || 'App') + '&background=random&size=128';
@@ -144,142 +163,166 @@ export default function AppDetails() {
                   }}
                 />
               </div>
-              <h2 className="text-2xl font-bold mb-2 tracking-tight">{app.name || "App"}</h2>
-              <p className="text-sm text-slate-500 mb-6 leading-relaxed">{app.description || "Aucune description."}</p>
-              <Button className="w-full rounded-2xl h-12 font-bold shadow-lg shadow-primary/20 transition-all active:scale-95" onClick={() => app.url && window.open(app.url, '_blank')}>
-                Lancer l'application
-              </Button>
               
-              <div className="mt-8 pt-8 border-t border-slate-50">
+              <Badge className={`mb-4 border-0 shadow-sm text-[10px] font-semibold px-3 py-1 rounded-full ${categoryColors[app.category || "Divers"]}`}>
+                {app.category || "Divers"}
+              </Badge>
+              
+              <h2 className="text-2xl font-bold mb-2 tracking-tight text-foreground">{app.name || "App"}</h2>
+              <p className="text-xs text-muted-foreground mb-2">{hostname}</p>
+              
+              <div className="my-6 py-6 border-t border-b border-border/50">
                 {isNew ? (
                   <div className="flex flex-col items-center gap-2">
-                    <Badge className="bg-primary/5 text-primary border-primary/10 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest">
+                    <Badge className="bg-primary/10 text-primary border-primary/20 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest">
                       <Sparkles size={12} className="mr-1" /> Nouveau
                     </Badge>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Pas encore d'avis</p>
+                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-tighter">Pas encore d'avis</p>
                   </div>
                 ) : (
                   <>
-                    <div className="text-5xl font-black text-slate-900 tracking-tighter">
+                    <div className="text-5xl font-black text-foreground tracking-tighter">
                       {displayRating.toFixed(1)}
                     </div>
                     <div className="flex justify-center my-3 gap-0.5">
                       {[1,2,3,4,5].map(s => (
-                        <Star key={s} size={18} className={s <= Math.round(displayRating) ? "fill-yellow-400 text-yellow-400" : "text-slate-100"} />
+                        <Star key={s} size={18} className={s <= Math.round(displayRating) ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground/20"} />
                       ))}
                     </div>
                     <div className="flex flex-col items-center gap-1">
-                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                        {hasCommunityReviews ? "Note Communauté" : "Score Global"}
+                      <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">
+                        {hasCommunityReviews ? "Note Communaute" : "Score Global"}
                       </span>
-                      <div className="text-xs font-bold text-slate-300">{votes} avis</div>
+                      <div className="text-xs font-bold text-muted-foreground/60">{votes} avis</div>
                     </div>
                   </>
                 )}
               </div>
+              
+              <Button 
+                className="w-full rounded-[16px] h-14 font-bold text-base shadow-lg shadow-primary/20 transition-all active:scale-95" 
+                onClick={() => app.url && window.open(app.url, '_blank')}
+                data-testid="button-launch-app"
+              >
+                <ExternalLink size={18} className="mr-2" />
+                Lancer l'application
+              </Button>
             </Card>
-          </div>
+          </motion.div>
 
-          <div className="md:col-span-2 space-y-8">
-            <Card className="p-8 rounded-[1.5rem] border-none shadow-[0_4px_12px_rgba(0,0,0,0.02)] bg-white">
-              <h3 className="text-xl font-bold mb-6 tracking-tight">Laisser un avis</h3>
-              <div className="space-y-6">
-                <div className="space-y-3">
-                  <Label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Votre Note</Label>
+          <motion.div 
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="lg:col-span-8 space-y-8"
+          >
+            <Card className="p-6 sm:p-8 rounded-[24px] border-0 bento-card">
+              <h3 className="text-lg font-bold mb-4 tracking-tight text-foreground">A propos</h3>
+              <p className="text-muted-foreground leading-relaxed">{app.description || "Aucune description disponible."}</p>
+            </Card>
+
+            <Card className="p-6 sm:p-8 rounded-[24px] border-0 bento-card">
+              <h3 className="text-lg font-bold mb-6 tracking-tight text-foreground">Laisser un avis</h3>
+              <div className="space-y-5">
+                <div className="space-y-2">
+                  <Label className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Votre Note</Label>
                   <div className="flex gap-2">
                     {[1,2,3,4,5].map(s => (
                       <Star 
                         key={s} 
-                        size={36} 
+                        size={32} 
                         className={`cursor-pointer transition-all duration-200 ${
-                          s <= (hoverRating || rating) ? "fill-yellow-400 text-yellow-400 scale-110" : "text-slate-100 hover:scale-105"
+                          s <= (hoverRating || rating) ? "fill-yellow-400 text-yellow-400 scale-110" : "text-muted-foreground/20 hover:scale-105"
                         }`}
                         onMouseEnter={() => setHoverRating(s)}
                         onMouseLeave={() => setHoverRating(0)}
                         onClick={() => setRating(s)}
+                        data-testid={`star-rating-${s}`}
                       />
                     ))}
                   </div>
                 </div>
 
-                <div className="space-y-3">
-                  <Label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Votre Nom</Label>
+                <div className="space-y-2">
+                  <Label className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Votre Nom</Label>
                   <Input 
                     placeholder="Ex: Jean Dupont" 
-                    className="h-12 rounded-xl bg-slate-50 border-none focus-visible:ring-primary/20"
+                    className="h-12 rounded-[12px] bg-secondary border-0 focus-visible:ring-primary/20"
                     value={username} 
                     onChange={e => setUsername(e.target.value)}
+                    data-testid="input-username"
                   />
                 </div>
 
-                <div className="space-y-3">
-                  <Label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Commentaire</Label>
+                <div className="space-y-2">
+                  <Label className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Commentaire</Label>
                   <Textarea 
-                    placeholder="Partagez votre expérience avec cet outil..." 
-                    className="min-h-[120px] rounded-xl bg-slate-50 border-none focus-visible:ring-primary/20 resize-none"
+                    placeholder="Partagez votre experience avec cet outil..." 
+                    className="min-h-[100px] rounded-[12px] bg-secondary border-0 focus-visible:ring-primary/20 resize-none"
                     value={comment} 
                     onChange={e => setComment(e.target.value)}
+                    data-testid="textarea-comment"
                   />
                 </div>
 
                 <Button 
-                  className="w-full h-14 rounded-2xl font-bold text-lg shadow-lg shadow-primary/10 hover:shadow-xl hover:shadow-primary/20 transition-all active:scale-95" 
+                  className="w-full h-12 rounded-[12px] font-bold shadow-lg shadow-primary/10 transition-all active:scale-95" 
                   disabled={!rating || !username || !comment || reviewMutation.isPending}
                   onClick={() => reviewMutation.mutate()}
+                  data-testid="button-submit-review"
                 >
-                  <Send size={18} className="mr-2" />
+                  <Send size={16} className="mr-2" />
                   {reviewMutation.isPending ? "Publication..." : "Publier l'avis"}
                 </Button>
               </div>
             </Card>
 
-            <div className="space-y-6 px-2">
-              <h3 className="text-xl font-bold tracking-tight">Avis des utilisateurs</h3>
+            <div className="space-y-4">
+              <h3 className="text-lg font-bold tracking-tight text-foreground px-1">Avis des utilisateurs</h3>
               {(!app.reviews || app.reviews.length === 0) ? (
-                <Card className="p-12 rounded-[1.5rem] border-2 border-dashed border-slate-100 bg-transparent text-center">
-                  <div className="text-4xl mb-4 opacity-20">💬</div>
-                  <p className="text-slate-400 font-medium italic">Aucun avis pour le moment. Soyez le premier !</p>
+                <Card className="p-10 rounded-[24px] border-2 border-dashed border-border bg-transparent text-center">
+                  <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-muted flex items-center justify-center">
+                    <span className="text-xl text-muted-foreground">...</span>
+                  </div>
+                  <p className="text-muted-foreground font-medium">Aucun avis pour le moment. Soyez le premier !</p>
                 </Card>
               ) : (
                 <div className="space-y-4">
                   {app.reviews.map((r: any) => (
                     <motion.div
                       key={r.id}
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
                     >
-                      <Card className="p-6 rounded-3xl border-none shadow-[0_4px_12px_rgba(0,0,0,0.02)] bg-white">
+                      <Card className="p-5 rounded-[20px] border-0 bento-card" data-testid={`review-${r.id}`}>
                         <div className="flex justify-between items-start mb-3">
                           <div>
-                            <span className="font-bold text-slate-900 block">{r.username || "Anonyme"}</span>
+                            <span className="font-bold text-foreground block">{r.username || "Anonyme"}</span>
                             <div className="flex gap-0.5 mt-1">
                               {[1,2,3,4,5].map(s => (
-                                <Star key={s} size={10} className={s <= (Number(r.rating) || 0) ? "fill-yellow-400 text-yellow-400" : "text-slate-100"} />
+                                <Star key={s} size={10} className={s <= (Number(r.rating) || 0) ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground/20"} />
                               ))}
                             </div>
                           </div>
-                          <span className="text-[9px] font-bold text-slate-300 uppercase tracking-widest">
+                          <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">
                             {r.createdAt ? format(new Date(r.createdAt), "d MMMM yyyy", { locale: fr }) : ""}
                           </span>
                         </div>
-                        <p className="text-sm leading-relaxed text-slate-600 font-medium">{r.comment || ""}</p>
+                        <p className="text-sm leading-relaxed text-muted-foreground">{r.comment || ""}</p>
                       </Card>
                     </motion.div>
                   ))}
                 </div>
               )}
             </div>
-          </div>
+          </motion.div>
         </div>
       </main>
 
-      <footer className="mt-auto border-t border-slate-100 bg-white py-12">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 text-center">
-          <h4 className="font-bold text-slate-900 mb-2 tracking-tight">WebAppStore</h4>
-          <p className="text-sm text-slate-500 mb-4 font-medium">Version MVP</p>
-          <div className="h-px w-12 bg-slate-100 mx-auto mb-4" />
-          <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Une question ou un retour ?</p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-2">
+      <footer className="mt-auto border-t border-border bg-card/50 py-10">
+        <div className="max-w-5xl mx-auto px-4 text-center">
+          <h4 className="font-bold text-foreground mb-2 tracking-tight">WebAppStore</h4>
+          <p className="text-sm text-muted-foreground mb-4 font-medium">Version MVP</p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <a 
               href="mailto:webappstore.contact@gmail.com" 
               className="text-sm font-bold text-primary hover:underline transition-all"
@@ -290,9 +333,9 @@ export default function AppDetails() {
               href="https://ko-fi.com/webappstore" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="flex items-center gap-2 px-4 py-2 rounded-full border border-slate-200 bg-slate-50/50 hover:bg-slate-100 transition-all text-sm font-bold text-slate-600 active:scale-95"
+              className="flex items-center gap-2 px-4 py-2 rounded-full border border-border bg-card hover:bg-accent transition-all text-sm font-bold text-foreground active:scale-95"
             >
-              <span className="text-red-500 animate-pulse-soft">❤️</span>
+              <Heart className="w-4 h-4 text-red-500 fill-red-500 animate-pulse-soft" />
               Soutenir le projet
             </a>
           </div>

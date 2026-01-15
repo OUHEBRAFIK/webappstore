@@ -1,4 +1,3 @@
-
 import { CATEGORIES } from "@shared/schema";
 import { Badge } from "@/components/ui/badge";
 import { Star } from "lucide-react";
@@ -23,12 +22,13 @@ export function CategoryFilters({
   return (
     <div className="flex flex-col gap-6 w-full">
       <div className="space-y-3">
-        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-2">Catégories</p>
+        <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest px-2">Categories</p>
         <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar px-1 -mx-1 scroll-smooth">
           <Badge 
             variant={!active ? "default" : "outline"}
-            className="cursor-pointer px-5 py-2 rounded-full border-none shadow-sm transition-all hover:scale-105 active:scale-95 shrink-0"
+            className="cursor-pointer px-5 py-2 rounded-full border-0 shadow-sm transition-all hover:scale-105 active:scale-95 shrink-0"
             onClick={() => onSelect(undefined)}
+            data-testid="filter-category-all"
           >
             Tout
           </Badge>
@@ -36,10 +36,11 @@ export function CategoryFilters({
             <Badge 
               key={c}
               variant={active === c ? "default" : "outline"}
-              className={`cursor-pointer px-5 py-2 rounded-full border-none shadow-sm transition-all hover:scale-105 active:scale-95 whitespace-nowrap shrink-0 ${
-                active === c ? "" : "bg-white hover:bg-slate-50"
+              className={`cursor-pointer px-5 py-2 rounded-full border-0 shadow-sm transition-all hover:scale-105 active:scale-95 whitespace-nowrap shrink-0 ${
+                active === c ? "" : "bg-card hover:bg-accent"
               }`}
               onClick={() => onSelect(c)}
+              data-testid={`filter-category-${c.toLowerCase().replace(/\s+/g, '-')}`}
             >
               {c} <span className="ml-1.5 opacity-50 text-[10px]">{counts[c] || 0}</span>
             </Badge>
@@ -48,16 +49,17 @@ export function CategoryFilters({
       </div>
 
       <div className="space-y-3">
-        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-2">Note Minimale</p>
+        <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest px-2">Note Minimale</p>
         <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar px-1 -mx-1">
           {[undefined, 4, 3].map(r => (
             <Badge
               key={String(r)}
               variant={activeRating === r ? "default" : "outline"}
-              className={`cursor-pointer px-5 py-2 rounded-full border-none shadow-sm transition-all hover:scale-105 active:scale-95 flex items-center gap-1.5 shrink-0 ${
-                activeRating === r ? "" : "bg-white hover:bg-slate-50"
+              className={`cursor-pointer px-5 py-2 rounded-full border-0 shadow-sm transition-all hover:scale-105 active:scale-95 flex items-center gap-1.5 shrink-0 ${
+                activeRating === r ? "" : "bg-card hover:bg-accent"
               }`}
               onClick={() => onRatingSelect(r)}
+              data-testid={`filter-rating-${r || 'all'}`}
             >
               {!r ? "Toutes" : (
                 <>

@@ -1,28 +1,26 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=SF+Pro+Display:wght@500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  /* Apple-inspired System Fonts fallbacks */
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --font-display: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 
-  /* Refined Palette - Apple Style V2 */
-  --background: 240 5% 98%;      /* #F9F9FB - Light Gray Background */
-  --foreground: 240 10% 3.9%;    /* Almost Black */
+  --background: 0 0% 98%;
+  --foreground: 240 10% 3.9%;
   
-  --card: 0 0% 100%;             /* Pure White Cards */
+  --card: 0 0% 100%;
   --card-foreground: 240 10% 3.9%;
   
   --popover: 0 0% 100%;
   --popover-foreground: 240 10% 3.9%;
   
-  --primary: 211 100% 50%;       /* Apple Blue #007AFF */
+  --primary: 211 100% 50%;
   --primary-foreground: 0 0% 100%;
   
-  --secondary: 240 4.8% 95.9%;   /* Light Gray secondary */
+  --secondary: 240 4.8% 95.9%;
   --secondary-foreground: 240 5.9% 10%;
   
   --muted: 240 4.8% 95.9%;
@@ -36,22 +34,66 @@
   
   --border: 240 5.9% 90%;
   --input: 240 5.9% 90%;
-  --ring: 211 100% 50%;          /* Blue Focus Ring */
+  --ring: 211 100% 50%;
   
-  --radius: 1.5rem;              /* 24px border radius for Pro look */
+  --radius: 1.5rem;
+}
+
+.dark {
+  --background: 240 10% 4%;
+  --foreground: 0 0% 98%;
+  
+  --card: 240 10% 8%;
+  --card-foreground: 0 0% 98%;
+  
+  --popover: 240 10% 8%;
+  --popover-foreground: 0 0% 98%;
+  
+  --primary: 211 100% 55%;
+  --primary-foreground: 0 0% 100%;
+  
+  --secondary: 240 5% 16%;
+  --secondary-foreground: 0 0% 98%;
+  
+  --muted: 240 5% 16%;
+  --muted-foreground: 240 5% 60%;
+  
+  --accent: 240 5% 16%;
+  --accent-foreground: 0 0% 98%;
+  
+  --destructive: 0 62.8% 50.6%;
+  --destructive-foreground: 0 0% 98%;
+  
+  --border: 240 5% 18%;
+  --input: 240 5% 18%;
+  --ring: 211 100% 55%;
 }
 
 @layer base {
   body {
     @apply bg-background text-foreground antialiased selection:bg-primary/20 selection:text-primary;
     font-family: var(--font-body);
-    line-height: 1.6;            /* Increased line spacing */
+    line-height: 1.6;
   }
 
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-display);
-    @apply tracking-tight font-bold; /* Bold titles */
+    @apply tracking-tight font-bold;
   }
+}
+
+.mesh-gradient {
+  background: 
+    radial-gradient(ellipse 80% 50% at 20% 40%, rgba(120, 119, 198, 0.03), transparent),
+    radial-gradient(ellipse 60% 50% at 80% 50%, rgba(255, 119, 198, 0.02), transparent),
+    radial-gradient(ellipse 50% 80% at 50% 100%, rgba(120, 198, 255, 0.02), transparent);
+}
+
+.dark .mesh-gradient {
+  background: 
+    radial-gradient(ellipse 80% 50% at 20% 40%, rgba(120, 119, 198, 0.08), transparent),
+    radial-gradient(ellipse 60% 50% at 80% 50%, rgba(255, 119, 198, 0.05), transparent),
+    radial-gradient(ellipse 50% 80% at 50% 100%, rgba(120, 198, 255, 0.05), transparent);
 }
 
 @keyframes gradient {
@@ -65,6 +107,11 @@
   50% { transform: scale(1.15); opacity: 0.8; }
 }
 
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
 .animate-gradient {
   background-size: 200% auto;
   animation: gradient 4s linear infinite;
@@ -74,12 +121,24 @@
   animation: pulse-soft 2s ease-in-out infinite;
 }
 
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
 @layer utilities {
   .glass-panel {
-    @apply bg-white/70 backdrop-blur-xl border border-white/20 shadow-xl;
+    @apply bg-white/70 dark:bg-gray-900/70 backdrop-blur-xl border border-white/20 dark:border-gray-700/30 shadow-xl;
   }
   
   .card-hover {
     @apply transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:-translate-y-1;
+  }
+
+  .bento-card {
+    @apply rounded-[24px] bg-card border-0 shadow-[0_2px_8px_rgba(0,0,0,0.04)] dark:shadow-[0_2px_8px_rgba(0,0,0,0.2)] transition-all duration-500;
+  }
+
+  .bento-featured {
+    @apply bg-gradient-to-br from-primary/5 via-card to-primary/5 dark:from-primary/10 dark:via-card dark:to-primary/10;
   }
 }
