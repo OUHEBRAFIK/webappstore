@@ -11,7 +11,7 @@ export const CATEGORIES = [
   "Jeux",
   "Développement",
   "Social",
-  "Autre"
+  "Utilitaires"
 ] as const;
 
 export const apps = pgTable("apps", {

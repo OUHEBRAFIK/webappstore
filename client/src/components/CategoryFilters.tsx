@@ -8,14 +8,18 @@ export function CategoryFilters({
   onSelect,
   activeRating,
   onRatingSelect,
-  counts = {}
+  counts = {},
+  categories = []
 }: { 
   active?: string, 
   onSelect: (c: string | undefined) => void,
   activeRating?: number,
   onRatingSelect: (r: number | undefined) => void,
-  counts?: Record<string, number>
+  counts?: Record<string, number>,
+  categories?: string[]
 }) {
+  const displayCategories = categories.length > 0 ? categories : CATEGORIES;
+
   return (
     <div className="flex flex-col gap-6 w-full">
       <div className="space-y-3">
@@ -28,7 +32,7 @@ export function CategoryFilters({
           >
             Tout
           </Badge>
-          {CATEGORIES.map(c => (
+          {displayCategories.map(c => (
             <Badge 
               key={c}
               variant={active === c ? "default" : "outline"}

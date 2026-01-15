@@ -35,6 +35,7 @@ export default function Home() {
 
   const apps = data?.apps || [];
   const categoryCounts = data?.counts || {};
+  const dynamicCategories = data?.categories || [];
 
   const filteredApps = useMemo(() => {
     if (!apps) return [];
@@ -84,6 +85,7 @@ export default function Home() {
                 activeRating={minRating}
                 onRatingSelect={setMinRating}
                 counts={categoryCounts}
+                categories={dynamicCategories}
               />
             </div>
           </aside>

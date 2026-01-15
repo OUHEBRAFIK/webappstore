@@ -42,16 +42,21 @@ export async function registerRoutes(
       const appsList = await storage.getApps(query);
       
       // Calculate category counts based on current filters (except the category filter itself)
+      // Use dynamic categories from actual data
       const allApps = await storage.getApps({ search: query.search });
       const counts: Record<string, number> = {};
+      const dynamicCategories = new Set<string>();
+      
       allApps.forEach(app => {
-        const cat = app.category || "Autre";
+        const cat = app.category || "Utilitaires";
         counts[cat] = (counts[cat] || 0) + 1;
+        dynamicCategories.add(cat);
       });
 
       res.json({
         apps: appsList,
         counts,
+        categories: Array.from(dynamicCategories).sort(),
         total: allApps.length
       });
     } catch (e) {
