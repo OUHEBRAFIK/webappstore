@@ -26,7 +26,7 @@ export function CategoryFilters({
         <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar px-1 -mx-1 scroll-smooth">
           <Badge 
             variant={!active ? "default" : "outline"}
-            className="cursor-pointer px-5 py-2 rounded-full border-0 shadow-sm transition-all hover:scale-105 active:scale-95 shrink-0"
+            className="cursor-pointer px-4 sm:px-5 py-2.5 sm:py-2 rounded-full border-0 shadow-sm transition-all hover:scale-105 active:scale-95 shrink-0 text-sm sm:text-xs"
             onClick={() => onSelect(undefined)}
             data-testid="filter-category-all"
           >
@@ -36,7 +36,7 @@ export function CategoryFilters({
             <Badge 
               key={c}
               variant={active === c ? "default" : "outline"}
-              className={`cursor-pointer px-5 py-2 rounded-full border-0 shadow-sm transition-all hover:scale-105 active:scale-95 whitespace-nowrap shrink-0 ${
+              className={`cursor-pointer px-4 sm:px-5 py-2.5 sm:py-2 rounded-full border-0 shadow-sm transition-all hover:scale-105 active:scale-95 whitespace-nowrap shrink-0 text-sm sm:text-xs ${
                 active === c ? "" : "bg-card hover:bg-accent"
               }`}
               onClick={() => onSelect(c)}
@@ -55,7 +55,7 @@ export function CategoryFilters({
             <Badge
               key={String(r)}
               variant={activeRating === r ? "default" : "outline"}
-              className={`cursor-pointer px-5 py-2 rounded-full border-0 shadow-sm transition-all hover:scale-105 active:scale-95 flex items-center gap-1.5 shrink-0 ${
+              className={`cursor-pointer px-4 sm:px-5 py-2.5 sm:py-2 rounded-full border-0 shadow-sm transition-all hover:scale-105 active:scale-95 flex items-center gap-1.5 shrink-0 text-sm sm:text-xs ${
                 activeRating === r ? "" : "bg-card hover:bg-accent"
               }`}
               onClick={() => onRatingSelect(r)}

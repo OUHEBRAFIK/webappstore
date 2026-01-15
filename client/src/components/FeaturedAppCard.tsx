@@ -42,7 +42,7 @@ const FeaturedAppCardInner = forwardRef<HTMLDivElement, { app: App }>(({ app }, 
     : `https://www.google.com/s2/favicons?domain=${hostname}&sz=128`;
 
   return (
-    <div ref={ref} className="sm:col-span-2 sm:row-span-2">
+    <div ref={ref} className="hidden sm:block sm:col-span-2 sm:row-span-2">
       <Link href={`/app/${app.id}`}>
         <Card className="group h-full overflow-hidden border-0 bento-card bento-featured hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_20px_50px_rgba(0,0,0,0.4)] cursor-pointer flex flex-col min-h-[400px] relative transition-transform duration-300 hover:-translate-y-1" data-testid={`card-featured-app-${app.id}`}>
           <div className="absolute top-4 left-4 z-10">

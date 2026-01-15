@@ -11,7 +11,7 @@ export function ThemeToggle() {
       variant="ghost"
       size="icon"
       onClick={toggleTheme}
-      className="rounded-full w-10 h-10 bg-secondary hover:bg-accent transition-all"
+      className="rounded-full w-11 h-11 sm:w-10 sm:h-10 bg-secondary hover:bg-accent transition-all"
       data-testid="button-theme-toggle"
     >
       <motion.div

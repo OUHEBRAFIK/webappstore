@@ -87,8 +87,8 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="max-w-[1400px] mx-auto px-4 sm:px-6 py-8 sm:py-12 flex-1 w-full">
-        <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
+      <main className="max-w-[1400px] mx-auto px-3 sm:px-6 py-6 sm:py-12 flex-1 w-full">
+        <div className="flex flex-col lg:flex-row gap-6 lg:gap-12">
           <aside className="w-full lg:w-72 flex-shrink-0">
             <div className="lg:sticky lg:top-32">
               <CategoryFilters 
@@ -103,8 +103,8 @@ export default function Home() {
           </aside>
 
           <div className="flex-1 min-w-0 w-full">
-            <div className="flex items-center justify-between mb-8 px-2">
-              <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-[0.2em]">
+            <div className="flex items-center justify-between mb-6 sm:mb-8 px-1 sm:px-2">
+              <h2 className="text-xs sm:text-sm font-bold text-muted-foreground uppercase tracking-[0.15em] sm:tracking-[0.2em]">
                 {category || "Toutes les applications"} 
                 {minRating && ` - ${minRating}+ Etoiles`}
                 <span className="ml-2 opacity-50">({filteredApps.length})</span>
@@ -113,7 +113,7 @@ export default function Home() {
             
             <motion.div 
               layout
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6"
             >
               <AnimatePresence mode="popLayout">
                 {isLoading ? (
@@ -122,13 +122,18 @@ export default function Home() {
                       key={`skeleton-${i}`}
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
-                      className={`h-[320px] bg-card rounded-[24px] shadow-sm animate-pulse ${i === 0 ? 'sm:col-span-2 sm:row-span-2 h-auto min-h-[400px]' : ''}`}
+                      className={`h-[280px] sm:h-[320px] bg-card rounded-[24px] shadow-sm animate-pulse ${i === 0 ? 'hidden sm:block sm:col-span-2 sm:row-span-2 h-auto min-h-[400px]' : ''}`}
                     />
                   ))
                 ) : (
                   <>
                     {featuredApp && !search && !category && (
-                      <FeaturedAppCard key={`featured-${featuredApp.id}`} app={featuredApp} />
+                      <>
+                        <FeaturedAppCard key={`featured-${featuredApp.id}`} app={featuredApp} />
+                        <div className="sm:hidden">
+                          <AppCard key={`mobile-featured-${featuredApp.id}`} app={featuredApp} />
+                        </div>
+                      </>
                     )}
                     {regularApps.map((app: any) => (
                       <AppCard key={app.id} app={app} />
