@@ -61,7 +61,12 @@ const extraApps: InsertApp[] = [
   { name: "Pinterest", url: "https://pinterest.com", category: "Social", description: "Discover recipes, home ideas, style inspiration and other ideas to try." },
   { name: "TikTok", url: "https://tiktok.com", category: "Social", description: "The leading destination for short-form mobile video. Our mission is to inspire creativity and bring joy." },
   { name: "Twitch", url: "https://twitch.tv", category: "Social", description: "The world's leading live streaming platform for gamers and the things we love." },
-  { name: "WhatsApp Web", url: "https://web.whatsapp.com", category: "Social", description: "Quickly send and receive WhatsApp messages right from your computer." },
+    name: "WhatsApp Web", 
+    url: "https://web.whatsapp.com", 
+    category: "Social", 
+    description: "Quickly send and receive WhatsApp messages right from your computer.",
+    icon_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/WhatsApp.svg/512px-WhatsApp.svg.png?v=2"
+  },
   { name: "Telegram Web", url: "https://web.telegram.org", category: "Social", description: "Pure instant messaging — simple, fast, secure, and synced across all your devices." },
   { name: "Mastodon", url: "https://joinmastodon.org", category: "Social", description: "Social networking that's not for sale. Decenteralized, open-source social media for the future." },
   { name: "Threads", url: "https://threads.net", category: "Social", description: "Share your ideas, join conversations, and follow the people you're interested in." },
