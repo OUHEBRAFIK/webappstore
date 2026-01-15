@@ -110,6 +110,11 @@ export default function AppDetails() {
     if (app.url) hostname = new URL(app.url).hostname;
   } catch(e) {}
 
+  const isWhatsApp = app?.name === "WhatsApp Web";
+  const logoUrl = isWhatsApp 
+    ? "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/WhatsApp.svg/512px-WhatsApp.svg.png"
+    : `https://www.google.com/s2/favicons?domain=${hostname}&sz=128`;
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <header className="bg-white/80 backdrop-blur-md border-b sticky top-0 z-50">
@@ -129,11 +134,13 @@ export default function AppDetails() {
             <Card className="p-8 rounded-[1.5rem] border-none shadow-[0_4px_12px_rgba(0,0,0,0.02)] bg-white text-center">
               <div className="w-24 h-24 rounded-[1.5rem] mx-auto mb-4 shadow-sm bg-white flex items-center justify-center overflow-hidden">
                 <img 
-                  src={`https://www.google.com/s2/favicons?domain=${hostname}&sz=128`}
+                  src={logoUrl}
                   alt={app.name || "App"}
                   className="w-full h-full p-2 object-contain"
                   onError={(e) => {
-                    e.currentTarget.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(app.name || 'App') + '&background=random&size=128';
+                    if (!isWhatsApp) {
+                      e.currentTarget.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(app.name || 'App') + '&background=random&size=128';
+                    }
                   }}
                 />
               </div>

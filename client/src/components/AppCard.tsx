@@ -36,6 +36,11 @@ export function AppCard({ app }: { app: App }) {
   const hasAnyRating = hasCommunityReviews || externalRating > 0;
   const isNew = !hasAnyRating;
 
+    const isWhatsApp = app.name === "WhatsApp Web";
+    const logoUrl = isWhatsApp 
+      ? "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/WhatsApp.svg/512px-WhatsApp.svg.png"
+      : `https://www.google.com/s2/favicons?domain=${hostname}&sz=128`;
+
   return (
     <motion.div
       layout
@@ -52,13 +57,15 @@ export function AppCard({ app }: { app: App }) {
               <div className="absolute inset-0 bg-black/5 blur-xl rounded-full scale-75 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <div className="w-24 h-24 rounded-[1.5rem] shadow-sm relative z-10 bg-white flex items-center justify-center overflow-hidden">
                 <motion.img 
-                  src={`https://www.google.com/s2/favicons?domain=${hostname}&sz=128`}
+                  src={logoUrl}
                   alt={app.name || "App"}
                   className="w-full h-full p-2 object-contain"
                   whileHover={{ scale: 1.1, rotate: 2 }}
                   transition={{ type: "spring", stiffness: 300, damping: 15 }}
                   onError={(e) => {
-                    e.currentTarget.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(app.name || 'App') + '&background=random&size=128';
+                    if (!isWhatsApp) {
+                      e.currentTarget.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(app.name || 'App') + '&background=random&size=128';
+                    }
                   }}
                 />
               </div>
