@@ -60,7 +60,7 @@ export class DatabaseStorage implements IStorage {
 
   async createApp(insertApp: InsertApp): Promise<App> {
     // Automatically translate description for new apps
-    const translatedDescription = await translateDescription(insertApp.description);
+    const translatedDescription = await translateDescription(insertApp.description || "");
     const [app] = await db.insert(apps).values({
       ...insertApp,
       description: translatedDescription

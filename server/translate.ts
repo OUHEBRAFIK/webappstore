@@ -10,6 +10,7 @@ const openai = new OpenAI({
 });
 
 export async function translateDescription(text: string): Promise<string> {
+  if (!text || text.trim().length === 0) return text;
   try {
     const response = await openai.chat.completions.create({
       model: "gpt-4o-mini",
