@@ -17,7 +17,7 @@ export async function registerRoutes(
     try {
       // Basic check for admin password (should be improved in real scenarios)
       const { password } = req.body;
-      const correctPassword = process.env.ADMIN_PASSWORD || "admin123";
+      const correctPassword = process.env.ADMIN_PASSWORD || "admin1234webappstore2026**";
       if (password !== correctPassword) {
         return res.status(401).json({ message: "Non autorisé" });
       }
@@ -127,7 +127,7 @@ export async function registerRoutes(
 
   app.post(api.admin.login.path, async (req, res) => {
     const { password } = req.body;
-    const correctPassword = process.env.ADMIN_PASSWORD || "admin123";
+    const correctPassword = process.env.ADMIN_PASSWORD || "admin1234webappstore2026**";
     if (password === correctPassword) {
       res.json({ success: true });
     } else {
