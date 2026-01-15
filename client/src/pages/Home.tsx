@@ -41,8 +41,8 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background text-slate-900 font-sans selection:bg-primary/10 flex flex-col">
-      <header className="sticky top-0 z-50 bg-white/70 backdrop-blur-2xl border-b border-slate-100/50">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 h-16 sm:h-20 flex flex-col sm:flex-row items-center justify-between gap-4 py-4 sm:py-0">
+      <header className="sticky top-0 z-50 bg-white/70 backdrop-blur-2xl border-b border-slate-100/50 px-4">
+        <div className="max-w-[1400px] mx-auto h-auto sm:h-20 flex flex-col sm:flex-row items-center justify-between gap-4 py-4 sm:py-0">
           <div className="flex items-center justify-between w-full sm:w-auto">
             <Link href="/" className="text-xl sm:text-2xl font-black tracking-tight bg-gradient-to-r from-slate-900 to-slate-600 bg-clip-text text-transparent">
               WebStore Central
@@ -66,7 +66,7 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="max-w-[1400px] mx-auto px-4 sm:px-6 py-8 sm:py-12 flex-1">
+      <main className="max-w-[1400px] mx-auto px-4 sm:px-6 py-8 sm:py-12 flex-1 w-full">
         <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
           <aside className="w-full lg:w-72 flex-shrink-0">
             <div className="lg:sticky lg:top-32">
@@ -79,7 +79,7 @@ export default function Home() {
             </div>
           </aside>
 
-          <div className="flex-1 min-w-0">
+          <div className="flex-1 min-w-0 w-full">
             <div className="flex items-center justify-between mb-8 px-2">
               <h2 className="text-sm font-bold text-slate-400 uppercase tracking-[0.2em]">
                 {category || "Toutes les applications"} 
@@ -90,7 +90,7 @@ export default function Home() {
             
             <motion.div 
               layout
-              className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-8"
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8"
             >
               <AnimatePresence mode="popLayout">
                 {isLoading ? (
