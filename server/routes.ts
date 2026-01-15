@@ -5,12 +5,32 @@ import { storage } from "./storage";
 import { api } from "@shared/routes";
 import { z } from "zod";
 import * as cheerio from "cheerio";
+import { translateAllDescriptions } from "./translate";
 
 export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
   
+  // Endpoint to trigger manual translation of all descriptions
+  app.post("/api/admin/translate-all", async (req, res) => {
+    try {
+      // Basic check for admin password (should be improved in real scenarios)
+      const { password } = req.body;
+      const correctPassword = process.env.ADMIN_PASSWORD || "admin123";
+      if (password !== correctPassword) {
+        return res.status(401).json({ message: "Non autorisé" });
+      }
+
+      // Run translation in background
+      translateAllDescriptions().catch(err => console.error("Batch translation error:", err));
+      
+      res.json({ message: "Traduction lancée en arrière-plan" });
+    } catch (e) {
+      res.status(500).json({ message: "Erreur lors du lancement de la traduction" });
+    }
+  });
+
   app.get(api.apps.list.path, async (req, res) => {
     try {
       const query = {

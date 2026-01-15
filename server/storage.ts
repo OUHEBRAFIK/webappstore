@@ -58,8 +58,17 @@ export class DatabaseStorage implements IStorage {
     return { ...app, reviews: appReviews };
   }
 
+import { translateDescription } from "./translate";
+
+export class DatabaseStorage implements IStorage {
+  // ... existing methods
+  
   async createApp(insertApp: InsertApp): Promise<App> {
-    const [app] = await db.insert(apps).values(insertApp).returning();
+    const translatedDescription = await translateDescription(insertApp.description);
+    const [app] = await db.insert(apps).values({
+      ...insertApp,
+      description: translatedDescription
+    }).returning();
     return app;
   }
 
