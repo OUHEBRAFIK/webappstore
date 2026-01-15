@@ -66,8 +66,11 @@ export default function Home() {
       <header className="sticky top-0 z-50 bg-background/80 dark:bg-background/90 backdrop-blur-2xl border-b border-border/50 px-4">
         <div className="max-w-[1400px] mx-auto h-auto sm:h-20 flex flex-col sm:flex-row items-center justify-between gap-4 py-4 sm:py-0">
           <div className="flex items-center justify-between w-full sm:w-auto">
-            <Link href="/" className="text-2xl sm:text-3xl font-black tracking-tight bg-gradient-to-r from-foreground via-primary to-foreground/60 bg-[length:200%_auto] animate-gradient bg-clip-text text-transparent" data-testid="link-home">
-              WebAppStore
+            <Link href="/" className="flex items-center gap-2" data-testid="link-home">
+              <img src="/icon.png" alt="WebAppStore" className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg" />
+              <span className="text-xl sm:text-2xl font-black tracking-tight bg-gradient-to-r from-foreground via-primary to-foreground/60 bg-[length:200%_auto] animate-gradient bg-clip-text text-transparent">
+                WebAppStore
+              </span>
             </Link>
             <div className="sm:hidden">
               <ThemeToggle />
@@ -162,7 +165,10 @@ export default function Home() {
 
       <footer className="mt-auto border-t border-border bg-card/50 py-12">
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 text-center">
-          <h4 className="font-bold text-foreground mb-2 tracking-tight">WebAppStore</h4>
+          <div className="flex items-center justify-center gap-2 mb-2">
+            <img src="/icon.png" alt="WebAppStore" className="w-8 h-8 rounded-lg" />
+            <h4 className="font-bold text-foreground tracking-tight">WebAppStore</h4>
+          </div>
           <p className="text-sm text-muted-foreground mb-4 font-medium">Version MVP</p>
           <div className="h-px w-12 bg-border mx-auto mb-4" />
           <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-1">Une question ou un retour ?</p>

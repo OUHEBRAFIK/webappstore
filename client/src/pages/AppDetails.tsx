@@ -320,7 +320,10 @@ export default function AppDetails() {
 
       <footer className="mt-auto border-t border-border bg-card/50 py-10">
         <div className="max-w-5xl mx-auto px-4 text-center">
-          <h4 className="font-bold text-foreground mb-2 tracking-tight">WebAppStore</h4>
+          <div className="flex items-center justify-center gap-2 mb-2">
+            <img src="/icon.png" alt="WebAppStore" className="w-8 h-8 rounded-lg" />
+            <h4 className="font-bold text-foreground tracking-tight">WebAppStore</h4>
+          </div>
           <p className="text-sm text-muted-foreground mb-4 font-medium">Version MVP</p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <a 
