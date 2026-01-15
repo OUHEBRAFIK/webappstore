@@ -46,7 +46,7 @@ export function AppCard({ app }: { app: App }) {
       transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
     >
       <Link href={`/app/${app.id}`}>
-        <Card className="group h-full overflow-hidden border-none shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] transition-shadow duration-500 rounded-[2rem] bg-white cursor-pointer flex flex-col">
+        <Card className="group h-full overflow-hidden border-none shadow-[0_4px_12px_rgba(0,0,0,0.02)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.05)] transition-all duration-500 rounded-[1.5rem] bg-white cursor-pointer flex flex-col">
           <div className="p-8 flex flex-col items-center text-center flex-1">
             <div className="relative mb-6">
               <div className="absolute inset-0 bg-black/5 blur-xl rounded-full scale-75 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />

@@ -111,7 +111,7 @@ export default function AppDetails() {
   } catch(e) {}
 
   return (
-    <div className="min-h-screen bg-[#f5f5f7] pb-12">
+    <div className="min-h-screen bg-background flex flex-col">
       <header className="bg-white/80 backdrop-blur-md border-b sticky top-0 z-50">
         <div className="max-w-4xl mx-auto px-4 h-16 flex items-center gap-4">
           <Link href="/">
@@ -123,22 +123,22 @@ export default function AppDetails() {
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-4 mt-8">
+      <main className="max-w-4xl mx-auto px-4 mt-8 flex-1 mb-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="md:col-span-1">
-            <Card className="p-8 rounded-[2.5rem] border-none shadow-sm bg-white text-center">
+            <Card className="p-8 rounded-[1.5rem] border-none shadow-[0_4px_12px_rgba(0,0,0,0.02)] bg-white text-center">
               <img 
                 src={`https://www.google.com/s2/favicons?domain=${hostname}&sz=128`}
                 alt={app.name || "App"}
-                className="w-24 h-24 rounded-[1.5rem] mx-auto mb-4 shadow-md bg-white p-2"
+                className="w-24 h-24 rounded-[1.5rem] mx-auto mb-4 shadow-sm bg-white p-2"
                 onError={(e) => {
                   (e.target as HTMLImageElement).src = "https://www.google.com/s2/favicons?domain=replit.com&sz=128";
                 }}
               />
               <h2 className="text-2xl font-bold mb-2 tracking-tight">{app.name || "App"}</h2>
               <p className="text-sm text-slate-500 mb-6 leading-relaxed">{app.description || "Aucune description."}</p>
-              <Button className="w-full rounded-2xl h-12 font-bold" onClick={() => app.url && window.open(app.url, '_blank')}>
-                Ouvrir l'application
+              <Button className="w-full rounded-2xl h-12 font-bold shadow-lg shadow-primary/20 transition-all active:scale-95" onClick={() => app.url && window.open(app.url, '_blank')}>
+                Lancer l'application
               </Button>
               
               <div className="mt-8 pt-8 border-t border-slate-50">
@@ -172,7 +172,7 @@ export default function AppDetails() {
           </div>
 
           <div className="md:col-span-2 space-y-8">
-            <Card className="p-8 rounded-[2.5rem] border-none shadow-sm bg-white">
+            <Card className="p-8 rounded-[1.5rem] border-none shadow-[0_4px_12px_rgba(0,0,0,0.02)] bg-white">
               <h3 className="text-xl font-bold mb-6 tracking-tight">Laisser un avis</h3>
               <div className="space-y-6">
                 <div className="space-y-3">
@@ -227,7 +227,7 @@ export default function AppDetails() {
             <div className="space-y-6 px-2">
               <h3 className="text-xl font-bold tracking-tight">Avis des utilisateurs</h3>
               {(!app.reviews || app.reviews.length === 0) ? (
-                <Card className="p-12 rounded-[2.5rem] border-2 border-dashed border-slate-100 bg-transparent text-center">
+                <Card className="p-12 rounded-[1.5rem] border-2 border-dashed border-slate-100 bg-transparent text-center">
                   <div className="text-4xl mb-4 opacity-20">💬</div>
                   <p className="text-slate-400 font-medium italic">Aucun avis pour le moment. Soyez le premier !</p>
                 </Card>
@@ -239,7 +239,7 @@ export default function AppDetails() {
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
                     >
-                      <Card className="p-6 rounded-3xl border-none shadow-sm bg-white">
+                      <Card className="p-6 rounded-3xl border-none shadow-[0_4px_12px_rgba(0,0,0,0.02)] bg-white">
                         <div className="flex justify-between items-start mb-3">
                           <div>
                             <span className="font-bold text-slate-900 block">{r.username || "Anonyme"}</span>
@@ -263,6 +263,21 @@ export default function AppDetails() {
           </div>
         </div>
       </main>
+
+      <footer className="mt-auto border-t border-slate-100 bg-white py-12">
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 text-center">
+          <h4 className="font-bold text-slate-900 mb-2 tracking-tight">WebAppStore Central</h4>
+          <p className="text-sm text-slate-500 mb-4 font-medium">Version MVP</p>
+          <div className="h-px w-12 bg-slate-100 mx-auto mb-4" />
+          <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Une question ou un retour ?</p>
+          <a 
+            href="mailto:webappstore.contact@gmail.com" 
+            className="text-sm font-bold text-primary hover:underline transition-all"
+          >
+            webappstore.contact@gmail.com
+          </a>
+        </div>
+      </footer>
     </div>
   );
 }

@@ -40,7 +40,7 @@ export default function Home() {
   }, [apps, minRating]);
 
   return (
-    <div className="min-h-screen bg-[#f8f9fb] text-slate-900 font-sans selection:bg-primary/10">
+    <div className="min-h-screen bg-background text-slate-900 font-sans selection:bg-primary/10 flex flex-col">
       <header className="sticky top-0 z-50 bg-white/70 backdrop-blur-2xl border-b border-slate-100/50">
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 h-16 sm:h-20 flex flex-col sm:flex-row items-center justify-between gap-4 py-4 sm:py-0">
           <div className="flex items-center justify-between w-full sm:w-auto">
@@ -49,7 +49,7 @@ export default function Home() {
             </Link>
             <div className="sm:hidden">
               <Link href="/submit">
-                <Button size="sm" className="rounded-full h-9 font-bold">Post</Button>
+                <Button size="sm" className="rounded-full h-9 font-bold">Soumettre</Button>
               </Link>
             </div>
           </div>
@@ -66,7 +66,7 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="max-w-[1400px] mx-auto px-4 sm:px-6 py-8 sm:py-12">
+      <main className="max-w-[1400px] mx-auto px-4 sm:px-6 py-8 sm:py-12 flex-1">
         <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
           <aside className="w-full lg:w-72 flex-shrink-0">
             <div className="lg:sticky lg:top-32">
@@ -99,7 +99,7 @@ export default function Home() {
                       key={`skeleton-${i}`}
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
-                      className="h-[320px] bg-white rounded-[2rem] shadow-sm animate-pulse" 
+                      className="h-[320px] bg-white rounded-[1.5rem] shadow-sm animate-pulse" 
                     />
                   ))
                 ) : (
@@ -124,6 +124,21 @@ export default function Home() {
           </div>
         </div>
       </main>
+
+      <footer className="mt-auto border-t border-slate-100 bg-white py-12">
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 text-center">
+          <h4 className="font-bold text-slate-900 mb-2 tracking-tight">WebAppStore Central</h4>
+          <p className="text-sm text-slate-500 mb-4 font-medium">Version MVP</p>
+          <div className="h-px w-12 bg-slate-100 mx-auto mb-4" />
+          <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Une question ou un retour ?</p>
+          <a 
+            href="mailto:webappstore.contact@gmail.com" 
+            className="text-sm font-bold text-primary hover:underline transition-all"
+          >
+            webappstore.contact@gmail.com
+          </a>
+        </div>
+      </footer>
     </div>
   );
 }

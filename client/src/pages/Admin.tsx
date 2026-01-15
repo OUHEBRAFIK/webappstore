@@ -118,22 +118,24 @@ function AdminDashboard() {
           <Button variant="ghost" onClick={() => setLocation("/")}>Retour</Button>
         </div>
 
-        <Card className="p-8 rounded-3xl border-none shadow-sm bg-white">
+        <Card className="p-8 rounded-[1.5rem] border-none shadow-[0_4px_12px_rgba(0,0,0,0.02)] bg-white">
           <div className="space-y-6">
             <div className="space-y-2">
               <Label>URL de l'application</Label>
               <div className="flex gap-2">
                 <Input 
                   placeholder="https://example.com" 
+                  className="rounded-xl h-12 bg-slate-50 border-none focus-visible:ring-primary/20"
                   value={formData.url}
                   onChange={(e) => setFormData({ ...formData, url: e.target.value })}
                 />
                 <Button 
                   variant="secondary" 
+                  className="rounded-xl px-6 font-bold"
                   onClick={() => scrapeMutation.mutate(formData.url)}
                   disabled={scrapeMutation.isPending || !formData.url}
                 >
-                  {scrapeMutation.isPending ? "..." : "Auto-fill"}
+                  {scrapeMutation.isPending ? "..." : "Remplissage Auto"}
                 </Button>
               </div>
             </div>
@@ -141,6 +143,7 @@ function AdminDashboard() {
             <div className="space-y-2">
               <Label>Nom</Label>
               <Input 
+                className="rounded-xl h-12 bg-slate-50 border-none focus-visible:ring-primary/20"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               />
@@ -152,7 +155,7 @@ function AdminDashboard() {
                 value={formData.category}
                 onValueChange={(v) => setFormData({ ...formData, category: v as any })}
               >
-                <SelectTrigger>
+                <SelectTrigger className="rounded-xl h-12 bg-slate-50 border-none focus-visible:ring-primary/20">
                   <SelectValue placeholder="Choisir une catégorie" />
                 </SelectTrigger>
                 <SelectContent>
@@ -166,14 +169,14 @@ function AdminDashboard() {
             <div className="space-y-2">
               <Label>Description</Label>
               <Textarea 
-                className="h-32"
+                className="h-32 rounded-xl bg-slate-50 border-none focus-visible:ring-primary/20 resize-none"
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               />
             </div>
 
             <Button 
-              className="w-full h-12 text-lg rounded-2xl" 
+              className="w-full h-14 text-lg rounded-2xl font-bold shadow-lg shadow-primary/20 transition-all active:scale-95" 
               onClick={() => createMutation.mutate(formData)}
               disabled={createMutation.isPending || !formData.name || !formData.url}
             >
