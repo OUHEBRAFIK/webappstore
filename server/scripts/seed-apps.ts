@@ -61,6 +61,7 @@ const extraApps: InsertApp[] = [
   { name: "Pinterest", url: "https://pinterest.com", category: "Social", description: "Discover recipes, home ideas, style inspiration and other ideas to try." },
   { name: "TikTok", url: "https://tiktok.com", category: "Social", description: "The leading destination for short-form mobile video. Our mission is to inspire creativity and bring joy." },
   { name: "Twitch", url: "https://twitch.tv", category: "Social", description: "The world's leading live streaming platform for gamers and the things we love." },
+  { 
     name: "WhatsApp Web", 
     url: "https://web.whatsapp.com", 
     category: "Social", 
