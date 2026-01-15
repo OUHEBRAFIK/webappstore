@@ -50,10 +50,12 @@ export function AppCard({ app }: { app: App }) {
           <div className="p-8 flex flex-col items-center text-center flex-1">
             <div className="relative mb-6">
               <div className="absolute inset-0 bg-black/5 blur-xl rounded-full scale-75 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              <img 
+              <motion.img 
                 src={`https://www.google.com/s2/favicons?domain=${hostname}&sz=128`}
                 alt={app.name || "App"}
                 className="w-24 h-24 rounded-[1.5rem] shadow-sm relative z-10 bg-white p-2"
+                whileHover={{ scale: 1.1, rotate: 2 }}
+                transition={{ type: "spring", stiffness: 300, damping: 15 }}
                 onError={(e) => {
                   (e.target as HTMLImageElement).src = "https://www.google.com/s2/favicons?domain=replit.com&sz=128";
                 }}

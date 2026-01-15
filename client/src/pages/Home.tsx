@@ -15,7 +15,7 @@ export default function Home() {
   const [minRating, setMinRating] = useState<number | undefined>();
 
   useEffect(() => {
-    document.title = "WebStore Central - Le meilleur des outils en ligne";
+    document.title = "WebAppStore - Le meilleur des outils en ligne";
     const metaDesc = document.querySelector('meta[name="description"]');
     if (metaDesc) {
       metaDesc.setAttribute("content", "Découvrez, comparez et évaluez les meilleures applications et outils web. Trouvez l'outil parfait pour booster votre productivité, design et IA.");
@@ -44,8 +44,8 @@ export default function Home() {
       <header className="sticky top-0 z-50 bg-white/70 backdrop-blur-2xl border-b border-slate-100/50 px-4">
         <div className="max-w-[1400px] mx-auto h-auto sm:h-20 flex flex-col sm:flex-row items-center justify-between gap-4 py-4 sm:py-0">
           <div className="flex items-center justify-between w-full sm:w-auto">
-            <Link href="/" className="text-xl sm:text-2xl font-black tracking-tight bg-gradient-to-r from-slate-900 to-slate-600 bg-clip-text text-transparent">
-              WebStore Central
+            <Link href="/" className="text-2xl sm:text-3xl font-black tracking-tight bg-gradient-to-r from-slate-900 via-primary to-slate-600 bg-[length:200%_auto] animate-gradient bg-clip-text text-transparent">
+              WebAppStore
             </Link>
             <div className="sm:hidden">
               <Link href="/submit">
@@ -53,9 +53,14 @@ export default function Home() {
               </Link>
             </div>
           </div>
-          <div className="w-full sm:flex-1 sm:max-w-xl">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="w-full sm:flex-1 sm:max-w-xl"
+          >
             <SearchBar value={search} onChange={setSearch} />
-          </div>
+          </motion.div>
           <div className="hidden sm:flex items-center gap-4">
             <Link href="/submit">
               <Button className="rounded-full px-6 h-11 font-bold shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all active:scale-95">
@@ -127,7 +132,7 @@ export default function Home() {
 
       <footer className="mt-auto border-t border-slate-100 bg-white py-12">
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 text-center">
-          <h4 className="font-bold text-slate-900 mb-2 tracking-tight">WebAppStore Central</h4>
+          <h4 className="font-bold text-slate-900 mb-2 tracking-tight">WebAppStore</h4>
           <p className="text-sm text-slate-500 mb-4 font-medium">Version MVP</p>
           <div className="h-px w-12 bg-slate-100 mx-auto mb-4" />
           <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Une question ou un retour ?</p>
@@ -144,7 +149,7 @@ export default function Home() {
               rel="noopener noreferrer"
               className="flex items-center gap-2 px-4 py-2 rounded-full border border-slate-200 bg-slate-50/50 hover:bg-slate-100 transition-all text-sm font-bold text-slate-600 active:scale-95"
             >
-              <span className="text-red-500">❤️</span>
+              <span className="text-red-500 animate-pulse-soft">❤️</span>
               Soutenir le projet
             </a>
           </div>

@@ -39,7 +39,7 @@ export default function AppDetails() {
 
   useEffect(() => {
     if (app) {
-      document.title = `${app.name} - Avis et détails | WebStore Central`;
+      document.title = `${app.name} - Avis et détails | WebAppStore`;
       const metaDesc = document.querySelector('meta[name="description"]');
       if (metaDesc) {
         metaDesc.setAttribute("content", `Découvrez ${app.name} : ${app.description}. Consultez les avis de la communauté et explorez cet outil web.`);
@@ -266,7 +266,7 @@ export default function AppDetails() {
 
       <footer className="mt-auto border-t border-slate-100 bg-white py-12">
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 text-center">
-          <h4 className="font-bold text-slate-900 mb-2 tracking-tight">WebAppStore Central</h4>
+          <h4 className="font-bold text-slate-900 mb-2 tracking-tight">WebAppStore</h4>
           <p className="text-sm text-slate-500 mb-4 font-medium">Version MVP</p>
           <div className="h-px w-12 bg-slate-100 mx-auto mb-4" />
           <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Une question ou un retour ?</p>
@@ -283,7 +283,7 @@ export default function AppDetails() {
               rel="noopener noreferrer"
               className="flex items-center gap-2 px-4 py-2 rounded-full border border-slate-200 bg-slate-50/50 hover:bg-slate-100 transition-all text-sm font-bold text-slate-600 active:scale-95"
             >
-              <span className="text-red-500">❤️</span>
+              <span className="text-red-500 animate-pulse-soft">❤️</span>
               Soutenir le projet
             </a>
           </div>
