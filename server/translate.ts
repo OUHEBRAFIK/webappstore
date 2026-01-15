@@ -4,7 +4,10 @@ import { db } from "./db";
 import { apps } from "@shared/schema";
 import { eq } from "drizzle-orm";
 
-const openai = new OpenAI();
+const openai = new OpenAI({
+  apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
+  baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
+});
 
 export async function translateDescription(text: string): Promise<string> {
   try {

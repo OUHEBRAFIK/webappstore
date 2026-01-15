@@ -1,4 +1,3 @@
-
 import { db } from "./db";
 import {
   apps,
@@ -9,6 +8,7 @@ import {
   type InsertReview
 } from "@shared/schema";
 import { eq, sql, desc } from "drizzle-orm";
+import { translateDescription } from "./translate";
 
 export interface IStorage {
   getApps(query?: { search?: string; category?: string; sort?: string }): Promise<App[]>;
@@ -58,12 +58,8 @@ export class DatabaseStorage implements IStorage {
     return { ...app, reviews: appReviews };
   }
 
-import { translateDescription } from "./translate";
-
-export class DatabaseStorage implements IStorage {
-  // ... existing methods
-  
   async createApp(insertApp: InsertApp): Promise<App> {
+    // Automatically translate description for new apps
     const translatedDescription = await translateDescription(insertApp.description);
     const [app] = await db.insert(apps).values({
       ...insertApp,
@@ -78,7 +74,7 @@ export class DatabaseStorage implements IStorage {
     // Update app rating and votes
     const app = await this.getApp(insertReview.appId);
     if (app) {
-      const currentTotal = (app.rating || 0) * (app.votes || 0);
+      const currentTotal = (Number(app.rating) || 0) * (app.votes || 0);
       const newVotes = (app.votes || 0) + 1;
       const newAverage = (currentTotal + insertReview.rating) / newVotes;
       
