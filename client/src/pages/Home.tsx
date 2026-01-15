@@ -131,12 +131,23 @@ export default function Home() {
           <p className="text-sm text-slate-500 mb-4 font-medium">Version MVP</p>
           <div className="h-px w-12 bg-slate-100 mx-auto mb-4" />
           <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Une question ou un retour ?</p>
-          <a 
-            href="mailto:webappstore.contact@gmail.com" 
-            className="text-sm font-bold text-primary hover:underline transition-all"
-          >
-            webappstore.contact@gmail.com
-          </a>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-2">
+            <a 
+              href="mailto:webappstore.contact@gmail.com" 
+              className="text-sm font-bold text-primary hover:underline transition-all"
+            >
+              webappstore.contact@gmail.com
+            </a>
+            <a 
+              href="https://ko-fi.com/webappstore" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-4 py-2 rounded-full border border-slate-200 bg-slate-50/50 hover:bg-slate-100 transition-all text-sm font-bold text-slate-600 active:scale-95"
+            >
+              <span className="text-red-500">❤️</span>
+              Soutenir le projet
+            </a>
+          </div>
         </div>
       </footer>
     </div>
