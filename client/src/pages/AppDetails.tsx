@@ -133,15 +133,7 @@ export default function AppDetails() {
                   alt={app.name || "App"}
                   className="w-full h-full p-2 object-contain"
                   onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    const parent = target.parentElement;
-                    if (parent) {
-                      target.style.display = 'none';
-                      const fallback = document.createElement('div');
-                      fallback.className = "w-full h-full flex items-center justify-center bg-primary/5 text-primary text-4xl font-bold uppercase tracking-tighter";
-                      fallback.innerText = (app.name || "?").charAt(0);
-                      parent.appendChild(fallback);
-                    }
+                    e.currentTarget.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(app.name || 'App') + '&background=random&size=128';
                   }}
                 />
               </div>
