@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Star, ArrowUpRight, Trophy, Sparkles } from "lucide-react";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
+import { AppLogo } from "./AppLogo";
 
 const categoryColors: Record<string, string> = {
   "IA": "bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-300 border-blue-200 dark:border-blue-700",
@@ -36,11 +37,6 @@ const FeaturedAppCardInner = forwardRef<HTMLDivElement, { app: App }>(({ app }, 
   const isNew = !hasAnyRating;
   const displayRating = hasCommunityReviews ? communityRating : externalRating;
 
-  const isWhatsApp = app.name === "WhatsApp Web";
-  const logoUrl = isWhatsApp 
-    ? "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/WhatsApp.svg/512px-WhatsApp.svg.png"
-    : `https://www.google.com/s2/favicons?domain=${hostname}&sz=128`;
-
   return (
     <div ref={ref} className="hidden sm:block sm:col-span-2 sm:row-span-2">
       <Link href={`/app/${app.id}`}>
@@ -55,16 +51,12 @@ const FeaturedAppCardInner = forwardRef<HTMLDivElement, { app: App }>(({ app }, 
           <div className="p-8 sm:p-10 flex flex-col sm:flex-row items-center sm:items-start gap-8 flex-1">
             <div className="relative flex-shrink-0">
               <div className="absolute inset-0 bg-primary/10 blur-2xl rounded-full scale-110 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-[24px] shadow-lg relative z-10 bg-card flex items-center justify-center overflow-hidden border border-border/50">
-                <img 
-                  src={logoUrl}
-                  alt={app.name || "App"}
-                  className="w-full h-full p-4 object-contain transition-transform duration-300 group-hover:scale-110"
-                  onError={(e) => {
-                    if (!isWhatsApp) {
-                      e.currentTarget.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(app.name || 'App') + '&background=random&size=128';
-                    }
-                  }}
+              <div className="relative z-10">
+                <AppLogo 
+                  appName={app.name || "App"} 
+                  appUrl={app.url || ""} 
+                  size="lg"
+                  className="shadow-lg"
                 />
               </div>
             </div>

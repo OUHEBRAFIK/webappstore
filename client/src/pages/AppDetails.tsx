@@ -15,6 +15,7 @@ import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { motion } from "framer-motion";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { AppLogo } from "@/components/AppLogo";
 
 const categoryColors: Record<string, string> = {
   "IA": "bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-300",
@@ -122,11 +123,6 @@ export default function AppDetails() {
     if (app.url) hostname = new URL(app.url).hostname;
   } catch(e) {}
 
-  const isWhatsApp = app?.name === "WhatsApp Web";
-  const logoUrl = isWhatsApp 
-    ? "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/WhatsApp.svg/512px-WhatsApp.svg.png"
-    : `https://www.google.com/s2/favicons?domain=${hostname}&sz=128`;
-
   return (
     <div className="min-h-screen bg-background mesh-gradient flex flex-col">
       <header className="bg-background/80 dark:bg-background/90 backdrop-blur-xl border-b border-border sticky top-0 z-50">
@@ -151,16 +147,12 @@ export default function AppDetails() {
             className="lg:col-span-4"
           >
             <Card className="p-8 rounded-[24px] border-0 bento-card text-center sticky top-24">
-              <div className="w-28 h-28 rounded-[24px] mx-auto mb-5 shadow-lg bg-background dark:bg-card flex items-center justify-center overflow-hidden border border-border/30">
-                <img 
-                  src={logoUrl}
-                  alt={app.name || "App"}
-                  className="w-full h-full p-3 object-contain"
-                  onError={(e) => {
-                    if (!isWhatsApp) {
-                      e.currentTarget.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(app.name || 'App') + '&background=random&size=128';
-                    }
-                  }}
+              <div className="mx-auto mb-5 w-fit">
+                <AppLogo 
+                  appName={app.name || "App"} 
+                  appUrl={app.url || ""} 
+                  size="lg"
+                  className="shadow-lg"
                 />
               </div>
               

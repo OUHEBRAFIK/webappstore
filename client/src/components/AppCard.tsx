@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Star, ArrowUpRight, Sparkles } from "lucide-react";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
+import { AppLogo } from "./AppLogo";
 
 const categoryColors: Record<string, string> = {
   "IA": "bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-300 border-blue-200 dark:border-blue-700",
@@ -35,11 +36,6 @@ const AppCardInner = forwardRef<HTMLDivElement, { app: App }>(({ app }, ref) => 
   const hasAnyRating = hasCommunityReviews || externalRating > 0;
   const isNew = !hasAnyRating;
 
-  const isWhatsApp = app.name === "WhatsApp Web";
-  const logoUrl = isWhatsApp 
-    ? "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/WhatsApp.svg/512px-WhatsApp.svg.png"
-    : `https://www.google.com/s2/favicons?domain=${hostname}&sz=128`;
-
   return (
     <div ref={ref}>
       <Link href={`/app/${app.id}`}>
@@ -47,16 +43,12 @@ const AppCardInner = forwardRef<HTMLDivElement, { app: App }>(({ app }, ref) => 
           <div className="p-6 flex flex-col items-center text-center flex-1">
             <div className="relative mb-5">
               <div className="absolute inset-0 bg-primary/5 blur-xl rounded-full scale-75 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              <div className="w-20 h-20 rounded-[20px] shadow-sm relative z-10 bg-background dark:bg-card flex items-center justify-center overflow-hidden border border-border/30">
-                <img 
-                  src={logoUrl}
-                  alt={app.name || "App"}
-                  className="w-full h-full p-2 object-contain transition-transform duration-300 group-hover:scale-110"
-                  onError={(e) => {
-                    if (!isWhatsApp) {
-                      e.currentTarget.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(app.name || 'App') + '&background=random&size=128';
-                    }
-                  }}
+              <div className="relative z-10">
+                <AppLogo 
+                  appName={app.name || "App"} 
+                  appUrl={app.url || ""} 
+                  size="md"
+                  className="shadow-sm"
                 />
               </div>
               <Badge className={`absolute -top-2 -right-2 border shadow-sm text-[9px] font-semibold px-2.5 py-0.5 rounded-full ${categoryColors[app.category || "Divers"]}`}>
