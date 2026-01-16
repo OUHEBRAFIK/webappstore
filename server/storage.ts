@@ -7,8 +7,27 @@ import {
   type Review,
   type InsertReview
 } from "@shared/schema";
-import { eq, sql, desc } from "drizzle-orm";
+import { eq, sql, desc, type SQL } from "drizzle-orm";
 import { translateDescription } from "./translate";
+import type { PgColumn } from "drizzle-orm/pg-core";
+
+// Function to normalize text for accent-insensitive search using PostgreSQL translate
+// Character mapping (1:1 correspondence):
+// àâä → aaa, éèêë → eeee, ïî → ii, ôö → oo, ùûü → uuu, ç → c, ñ → n
+function normalizeText(column: PgColumn): SQL {
+  const accentedFrom = "àâäáãéèêëíïîìóôöòõúùûüñçÀÂÄÁÃÉÈÊËÍÏÎÌÓÔÖÒÕÚÙÛÜÑÇ";
+  const normalizedTo = "aaaaaeeeeiiiiooooouuuuncAAAAAEEEEIIIIOOOOOUUUUNC";
+  return sql`lower(translate(COALESCE(${column}, ''), ${accentedFrom}, ${normalizedTo}))`;
+}
+
+// Function to normalize search term in JavaScript
+function normalizeForSearch(text: string): string {
+  return text
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim();
+}
 
 export interface IStorage {
   getApps(query?: { search?: string; category?: string; sort?: string }): Promise<App[]>;
@@ -30,7 +49,11 @@ export class DatabaseStorage implements IStorage {
     }
 
     if (query?.search) {
-      conditions.push(sql`lower(${apps.name}) LIKE ${`%${query.search.toLowerCase()}%`}`);
+      const searchTerm = normalizeForSearch(query.search);
+      conditions.push(sql`(
+        ${normalizeText(apps.name)} LIKE ${`%${searchTerm}%`}
+        OR ${normalizeText(apps.description)} LIKE ${`%${searchTerm}%`}
+      )`);
     }
 
     let orderBy = desc(apps.createdAt);
