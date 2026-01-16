@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useState, useMemo } from "react";
 
 interface AppLogoProps {
   appName: string;
@@ -46,14 +46,6 @@ function getConsistentGradient(name: string): { bg: string; text: string } {
   return gradientColors[Math.abs(hash) % gradientColors.length];
 }
 
-function getHostname(url: string): string {
-  try {
-    return new URL(url).hostname;
-  } catch {
-    return "app";
-  }
-}
-
 function getInitials(name: string): string {
   if (!name) return "?";
   const cleanName = name.replace(/[.,-_]/g, " ").trim();
@@ -63,20 +55,6 @@ function getInitials(name: string): string {
     return words[0].charAt(0).toUpperCase();
   }
   return (words[0].charAt(0) + words[1].charAt(0)).toUpperCase();
-}
-
-function isGenericIcon(url: string): boolean {
-  const genericPatterns = [
-    /default/i,
-    /placeholder/i,
-    /blank/i,
-    /empty/i,
-    /generic/i,
-    /no[-_]?image/i,
-    /no[-_]?logo/i,
-    /missing/i,
-  ];
-  return genericPatterns.some(pattern => pattern.test(url));
 }
 
 const sizeClasses = {
@@ -98,78 +76,40 @@ const imgPadding = {
 };
 
 export function AppLogo({ appName, appUrl, customIconUrl, size = "md", className = "" }: AppLogoProps) {
-  const [logoState, setLogoState] = useState<"custom" | "clearbit" | "google" | "fallback">("custom");
-  const [currentSrc, setCurrentSrc] = useState<string>("");
-  const failedSources = useRef<Set<string>>(new Set());
-
-  const hostname = useMemo(() => getHostname(appUrl), [appUrl]);
-  const domain = useMemo(() => hostname.replace(/^www\./, ""), [hostname]);
-  
-  const logoSources = useMemo(() => {
-    const sources: { [key: string]: string } = {
-      clearbit: `https://logo.clearbit.com/${domain}`,
-      google: `https://www.google.com/s2/favicons?domain=${hostname}&sz=128`,
-    };
-    if (customIconUrl && customIconUrl.trim()) {
-      sources.custom = customIconUrl.trim();
-    }
-    return sources;
-  }, [domain, hostname, customIconUrl]);
+  const [showFallback, setShowFallback] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   const gradient = useMemo(() => getConsistentGradient(appName || "App"), [appName]);
   const initials = useMemo(() => getInitials(appName || "App"), [appName]);
-
-  useEffect(() => {
-    failedSources.current.clear();
-    
-    if (customIconUrl && customIconUrl.trim() && !isGenericIcon(customIconUrl)) {
-      setLogoState("custom");
-      setCurrentSrc(customIconUrl.trim());
-    } else {
-      setLogoState("clearbit");
-      setCurrentSrc(logoSources.clearbit);
+  
+  const iconUrl = useMemo(() => {
+    if (customIconUrl && customIconUrl.trim()) {
+      return customIconUrl.trim();
     }
-  }, [customIconUrl, logoSources.clearbit]);
+    return null;
+  }, [customIconUrl]);
 
   const handleImageError = () => {
-    failedSources.current.add(currentSrc);
-    
-    switch (logoState) {
-      case "custom":
-        setLogoState("clearbit");
-        setCurrentSrc(logoSources.clearbit);
-        break;
-      case "clearbit":
-        setLogoState("google");
-        setCurrentSrc(logoSources.google);
-        break;
-      case "google":
-        setLogoState("fallback");
-        break;
-    }
+    setShowFallback(true);
+    setImageLoaded(false);
   };
 
   const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
     const img = e.currentTarget;
-    
-    if (img.naturalWidth < 24 || img.naturalHeight < 24) {
-      handleImageError();
-      return;
-    }
-    
-    if (img.naturalWidth === img.naturalHeight && img.naturalWidth <= 16) {
-      handleImageError();
-      return;
+    if (img.naturalWidth < 16 || img.naturalHeight < 16) {
+      setShowFallback(true);
+      setImageLoaded(false);
+    } else {
+      setImageLoaded(true);
+      setShowFallback(false);
     }
   };
 
-  if (logoState === "fallback") {
+  if (showFallback || !iconUrl) {
     return (
       <div 
         className={`${sizeClasses[size]} rounded-[22px] flex items-center justify-center shadow-lg ring-1 ring-black/5 ${className}`}
-        style={{ 
-          background: gradient.bg,
-        }}
+        style={{ background: gradient.bg }}
       >
         <span 
           className={`${textSizeClasses[size]} tracking-tight drop-shadow-sm`}
@@ -183,16 +123,27 @@ export function AppLogo({ appName, appUrl, customIconUrl, size = "md", className
 
   return (
     <div className={`${sizeClasses[size]} rounded-[22px] bg-white dark:bg-zinc-800 flex items-center justify-center overflow-hidden shadow-lg ring-1 ring-black/5 dark:ring-white/10 ${className}`}>
-      {currentSrc && (
-        <img
-          src={currentSrc}
-          alt={appName || "App"}
-          className={`w-full h-full ${imgPadding[size]} object-contain transition-transform duration-300 group-hover:scale-110`}
-          onError={handleImageError}
-          onLoad={handleImageLoad}
-          loading="lazy"
-          crossOrigin="anonymous"
-        />
+      <img
+        src={iconUrl}
+        alt={appName || "App"}
+        className={`w-full h-full ${imgPadding[size]} object-contain transition-transform duration-300 group-hover:scale-110`}
+        style={{ display: imageLoaded ? 'block' : 'none' }}
+        onError={handleImageError}
+        onLoad={handleImageLoad}
+        loading="lazy"
+      />
+      {!imageLoaded && !showFallback && (
+        <div 
+          className={`${sizeClasses[size]} rounded-[22px] flex items-center justify-center absolute`}
+          style={{ background: gradient.bg }}
+        >
+          <span 
+            className={`${textSizeClasses[size]} tracking-tight drop-shadow-sm`}
+            style={{ color: gradient.text }}
+          >
+            {initials}
+          </span>
+        </div>
       )}
     </div>
   );
