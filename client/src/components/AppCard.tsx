@@ -47,6 +47,7 @@ const AppCardInner = forwardRef<HTMLDivElement, { app: App }>(({ app }, ref) => 
                 <AppLogo 
                   appName={app.name || "App"} 
                   appUrl={app.url || ""} 
+                  customIconUrl={app.iconUrl}
                   size="md"
                   className="shadow-sm"
                 />

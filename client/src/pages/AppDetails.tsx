@@ -151,6 +151,7 @@ export default function AppDetails() {
                 <AppLogo 
                   appName={app.name || "App"} 
                   appUrl={app.url || ""} 
+                  customIconUrl={app.iconUrl}
                   size="lg"
                   className="shadow-lg"
                 />

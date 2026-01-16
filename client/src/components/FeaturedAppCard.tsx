@@ -55,6 +55,7 @@ const FeaturedAppCardInner = forwardRef<HTMLDivElement, { app: App }>(({ app }, 
                 <AppLogo 
                   appName={app.name || "App"} 
                   appUrl={app.url || ""} 
+                  customIconUrl={app.iconUrl}
                   size="lg"
                   className="shadow-lg"
                 />

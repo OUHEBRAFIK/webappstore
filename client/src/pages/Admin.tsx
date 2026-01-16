@@ -59,7 +59,7 @@ function AdminDashboard() {
     url: "",
     name: "",
     description: "",
-    category: "Autre",
+    category: "Divers",
     iconUrl: ""
   });
   const [loading, setLoading] = useState(false);
@@ -173,6 +173,19 @@ function AdminDashboard() {
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               />
+            </div>
+
+            <div className="space-y-2">
+              <Label>URL du logo (optionnel)</Label>
+              <Input 
+                placeholder="https://example.com/logo.png" 
+                className="rounded-xl h-12 bg-slate-50 border-none focus-visible:ring-primary/20"
+                value={formData.iconUrl || ""}
+                onChange={(e) => setFormData({ ...formData, iconUrl: e.target.value })}
+              />
+              <p className="text-xs text-muted-foreground">
+                Laissez vide pour utiliser la détection automatique du logo
+              </p>
             </div>
 
             <Button 
