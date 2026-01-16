@@ -16,6 +16,8 @@ export interface IStorage {
   createApp(app: InsertApp): Promise<App>;
   createReview(review: InsertReview): Promise<Review>;
   bulkCreateApps(appsList: InsertApp[]): Promise<App[]>;
+  updateAppIconUrl(id: number, iconUrl: string): Promise<void>;
+  getAllAppsForIconUpdate(): Promise<{ id: number; url: string; category: string }[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -89,6 +91,23 @@ export class DatabaseStorage implements IStorage {
   async bulkCreateApps(appsList: InsertApp[]): Promise<App[]> {
     if (appsList.length === 0) return [];
     return await db.insert(apps).values(appsList).returning();
+  }
+
+  async updateAppIconUrl(id: number, iconUrl: string): Promise<void> {
+    await db.update(apps).set({ iconUrl }).where(eq(apps.id, id));
+  }
+
+  async getAllAppsForIconUpdate(): Promise<{ id: number; url: string; category: string }[]> {
+    const result = await db.select({
+      id: apps.id,
+      url: apps.url,
+      category: apps.category
+    }).from(apps);
+    return result.map(r => ({
+      id: r.id,
+      url: r.url || "",
+      category: r.category || "Divers"
+    }));
   }
 }
 

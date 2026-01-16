@@ -135,5 +135,40 @@ export async function registerRoutes(
     }
   });
 
+  app.post("/api/admin/populate-icons", async (req, res) => {
+    try {
+      const { password } = req.body;
+      const correctPassword = process.env.ADMIN_PASSWORD || "admin1234webappstore2026**";
+      if (password !== correctPassword) {
+        return res.status(401).json({ message: "Non autorise" });
+      }
+
+      const allApps = await storage.getAllAppsForIconUpdate();
+      let updated = 0;
+      let failed = 0;
+
+      for (const app of allApps) {
+        try {
+          const url = new URL(app.url);
+          const domain = url.hostname.replace(/^www\./, "");
+          const clearbitUrl = `https://logo.clearbit.com/${domain}`;
+          
+          await storage.updateAppIconUrl(app.id, clearbitUrl);
+          updated++;
+        } catch (e) {
+          failed++;
+        }
+      }
+
+      res.json({ 
+        message: `Mise a jour terminee: ${updated} apps avec logo, ${failed} echecs`,
+        updated,
+        failed 
+      });
+    } catch (e) {
+      res.status(500).json({ message: "Erreur lors de la mise a jour des icones" });
+    }
+  });
+
   return httpServer;
 }
