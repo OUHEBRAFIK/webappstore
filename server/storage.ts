@@ -37,6 +37,7 @@ export interface IStorage {
   bulkCreateApps(appsList: InsertApp[]): Promise<App[]>;
   updateAppIconUrl(id: number, iconUrl: string): Promise<void>;
   getAllAppsForIconUpdate(): Promise<{ id: number; url: string; category: string }[]>;
+  getTopAppsByCategory(limit?: number): Promise<{ category: string; apps: App[]; total: number }[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -131,6 +132,46 @@ export class DatabaseStorage implements IStorage {
       url: r.url || "",
       category: r.category || "Divers"
     }));
+  }
+
+  async getTopAppsByCategory(limit: number = 10): Promise<{ category: string; apps: App[]; total: number }[]> {
+    const allApps = await db.select().from(apps).orderBy(desc(apps.rating), desc(apps.votes));
+    
+    const categoryMap = new Map<string, App[]>();
+    
+    for (const app of allApps) {
+      const cat = app.category || "Divers";
+      if (!categoryMap.has(cat)) {
+        categoryMap.set(cat, []);
+      }
+      categoryMap.get(cat)!.push(app);
+    }
+    
+    const categoryOrder = ["IA", "Productivité", "Design", "Jeux", "Développement", "Outils", "Réseaux Sociaux"];
+    const result: { category: string; apps: App[]; total: number }[] = [];
+    
+    for (const cat of categoryOrder) {
+      const catApps = categoryMap.get(cat) || [];
+      if (catApps.length > 0) {
+        result.push({
+          category: cat,
+          apps: catApps.slice(0, limit),
+          total: catApps.length
+        });
+      }
+    }
+    
+    for (const [cat, catApps] of categoryMap) {
+      if (!categoryOrder.includes(cat) && catApps.length > 0) {
+        result.push({
+          category: cat,
+          apps: catApps.slice(0, limit),
+          total: catApps.length
+        });
+      }
+    }
+    
+    return result;
   }
 }
 

@@ -31,6 +31,16 @@ export async function registerRoutes(
     }
   });
 
+  // New endpoint for homepage with top 10 apps per category
+  app.get("/api/apps/homepage", async (req, res) => {
+    try {
+      const categories = await storage.getTopAppsByCategory(10);
+      res.json({ categories });
+    } catch (e) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
   app.get(api.apps.list.path, async (req, res) => {
     try {
       const query = {
