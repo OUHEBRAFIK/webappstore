@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 
 interface AppLogoProps {
   appName: string;
@@ -57,6 +57,15 @@ function getInitials(name: string): string {
   return (words[0].charAt(0) + words[1].charAt(0)).toUpperCase();
 }
 
+function extractDomain(url: string): string {
+  try {
+    const parsed = new URL(url);
+    return parsed.hostname.replace(/^www\./, "");
+  } catch {
+    return "";
+  }
+}
+
 const sizeClasses = {
   sm: "w-12 h-12",
   md: "w-20 h-20",
@@ -76,36 +85,59 @@ const imgPadding = {
 };
 
 export function AppLogo({ appName, appUrl, customIconUrl, size = "md", className = "" }: AppLogoProps) {
-  const [showFallback, setShowFallback] = useState(false);
+  const [sourceIndex, setSourceIndex] = useState(0);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [showFallback, setShowFallback] = useState(false);
+  const mountedRef = useRef(true);
 
   const gradient = useMemo(() => getConsistentGradient(appName || "App"), [appName]);
   const initials = useMemo(() => getInitials(appName || "App"), [appName]);
-  
-  const iconUrl = useMemo(() => {
+  const domain = useMemo(() => extractDomain(appUrl), [appUrl]);
+
+  const logoSources = useMemo(() => {
+    const sources: string[] = [];
     if (customIconUrl && customIconUrl.trim()) {
-      return customIconUrl.trim();
+      sources.push(customIconUrl.trim());
     }
-    return null;
-  }, [customIconUrl]);
+    if (domain) {
+      sources.push(`https://www.google.com/s2/favicons?domain=${domain}&sz=128`);
+      sources.push(`https://logo.clearbit.com/${domain}`);
+      sources.push(`https://icons.duckduckgo.com/ip3/${domain}.ico`);
+    }
+    return sources;
+  }, [domain, customIconUrl]);
 
-  const handleImageError = () => {
-    setShowFallback(true);
+  useEffect(() => {
+    mountedRef.current = true;
+    setSourceIndex(0);
     setImageLoaded(false);
-  };
+    setShowFallback(false);
+    return () => { mountedRef.current = false; };
+  }, [appUrl]);
 
-  const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
+  const handleImageError = useCallback(() => {
+    if (!mountedRef.current) return;
+    setImageLoaded(false);
+    if (sourceIndex < logoSources.length - 1) {
+      setSourceIndex(prev => prev + 1);
+    } else {
+      setShowFallback(true);
+    }
+  }, [sourceIndex, logoSources.length]);
+
+  const handleImageLoad = useCallback((e: React.SyntheticEvent<HTMLImageElement>) => {
+    if (!mountedRef.current) return;
     const img = e.currentTarget;
     if (img.naturalWidth < 16 || img.naturalHeight < 16) {
-      setShowFallback(true);
-      setImageLoaded(false);
+      handleImageError();
     } else {
       setImageLoaded(true);
-      setShowFallback(false);
     }
-  };
+  }, [handleImageError]);
 
-  if (showFallback || !iconUrl) {
+  const currentUrl = logoSources[sourceIndex] || null;
+
+  if (showFallback || !currentUrl || logoSources.length === 0) {
     return (
       <div 
         className={`${sizeClasses[size]} rounded-[22px] flex items-center justify-center shadow-lg ring-1 ring-black/5 ${className}`}
@@ -122,19 +154,10 @@ export function AppLogo({ appName, appUrl, customIconUrl, size = "md", className
   }
 
   return (
-    <div className={`${sizeClasses[size]} rounded-[22px] bg-white dark:bg-zinc-800 flex items-center justify-center overflow-hidden shadow-lg ring-1 ring-black/5 dark:ring-white/10 ${className}`}>
-      <img
-        src={iconUrl}
-        alt={appName || "App"}
-        className={`w-full h-full ${imgPadding[size]} object-contain transition-transform duration-300 group-hover:scale-110`}
-        style={{ display: imageLoaded ? 'block' : 'none' }}
-        onError={handleImageError}
-        onLoad={handleImageLoad}
-        loading="lazy"
-      />
-      {!imageLoaded && !showFallback && (
+    <div className={`${sizeClasses[size]} rounded-[22px] bg-white dark:bg-zinc-800 flex items-center justify-center overflow-hidden shadow-lg ring-1 ring-black/5 dark:ring-white/10 relative ${className}`}>
+      {!imageLoaded && (
         <div 
-          className={`${sizeClasses[size]} rounded-[22px] flex items-center justify-center absolute`}
+          className="absolute inset-0 rounded-[22px] flex items-center justify-center"
           style={{ background: gradient.bg }}
         >
           <span 
@@ -145,6 +168,19 @@ export function AppLogo({ appName, appUrl, customIconUrl, size = "md", className
           </span>
         </div>
       )}
+      <img
+        src={currentUrl}
+        alt={appName || "App"}
+        className={`w-full h-full ${imgPadding[size]} object-contain transition-transform duration-300 group-hover:scale-110`}
+        style={{ 
+          opacity: imageLoaded ? 1 : 0,
+          position: 'relative',
+          zIndex: imageLoaded ? 1 : 0
+        }}
+        onError={handleImageError}
+        onLoad={handleImageLoad}
+        loading="lazy"
+      />
     </div>
   );
 }
