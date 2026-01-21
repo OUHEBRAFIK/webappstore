@@ -1,3 +1,4 @@
+import { Helmet } from 'react-helmet-async';
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useParams, Link } from "wouter";
 import { api, buildUrl } from "@shared/routes";
@@ -125,6 +126,37 @@ export default function AppDetails() {
 
   return (
     <div className="min-h-screen bg-background mesh-gradient flex flex-col">
+      <Helmet>
+  {/* Titre dynamique et puissant pour Google */}
+  <title>{app ? `${app.name} - Meilleure Web App ${app.category} | WebAppStore` : 'Chargement... | WebAppStore'}</title>
+  
+  {/* Meta description pour le résumé dans les résultats de recherche */}
+  <meta name="description" content={app ? `Utilisez ${app.name} en ligne gratuitement. Catégorie ${app.category} : ${app.description?.substring(0, 120)}... Accès instantané sans installation.` : 'Découvrez les meilleures applications web sur WebAppStore.'} />
+
+  {/* Balises pour que le partage sur Twitter et Facebook soit pro */}
+  <meta property="og:title" content={app ? `${app.name} - WebAppStore` : 'WebAppStore'} />
+  <meta property="og:description" content={app?.description} />
+  <meta property="og:image" content={app?.iconUrl} />
+  
+  {/* Données structurées pour que Google affiche les étoiles de vote dans les résultats */}
+  {app && (
+    <script type="application/ld+json">
+      {JSON.stringify({
+        "@context": "https://schema.org/",
+        "@type": "SoftwareApplication",
+        "name": app.name,
+        "description": app.description,
+        "applicationCategory": app.category,
+        "operatingSystem": "Web",
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": app.rating || "4.5",
+          "reviewCount": app.reviews?.length || "1"
+        }
+      })}
+    </script>
+  )}
+</Helmet>
       <header className="bg-background/80 dark:bg-background/90 backdrop-blur-xl border-b border-border sticky top-0 z-50">
         <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
           <div className="flex items-center gap-4">

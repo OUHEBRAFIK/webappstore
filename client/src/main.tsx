@@ -1,6 +1,7 @@
 import { createRoot } from "react-dom/client";
 import App from "./App";
 import "./index.css";
+import { HelmetProvider } from "react-helmet-async"; // Ajoute cet import en haut
 
 declare global {
   interface Window {
@@ -31,4 +32,8 @@ function initGoogleAnalytics() {
 
 initGoogleAnalytics();
 
-createRoot(document.getElementById("root")!).render(<App />);
+createRoot(document.getElementById("root")!).render(
+  <HelmetProvider>
+    <App />
+  </HelmetProvider>
+);

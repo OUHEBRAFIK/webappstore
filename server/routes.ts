@@ -6,7 +6,8 @@ import { api } from "@shared/routes";
 import { z } from "zod";
 import * as cheerio from "cheerio";
 import { translateAllDescriptions } from "./translate";
-
+import { db } from "./db";
+import { apps } from "@shared/schema";
 export async function registerRoutes(
   httpServer: Server,
   app: Express
@@ -179,6 +180,41 @@ export async function registerRoutes(
       res.status(500).json({ message: "Erreur lors de la mise a jour des icones" });
     }
   });
+// Route pour générer le sitemap.xml dynamiquement
+app.get("/sitemap.xml", async (req, res) => {
+  try {
+    // 1. Récupérer toutes les applications depuis la base de données
+    const allApps = await db.select().from(apps);
 
+    // 2. Début du fichier XML
+    let sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+    <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+      <!-- Page d'accueil -->
+      <url>
+        <loc>https://webappstore.store/</loc>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+      </url>`;
+
+    // 3. Ajouter chaque application dynamiquement
+    allApps.forEach((app) => {
+      sitemap += `
+      <url>
+        <loc>https://webappstore.store/app/${app.id}</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+      </url>`;
+    });
+
+    sitemap += `\n</urlset>`;
+
+    // 4. Envoyer le fichier avec le bon format
+    res.header("Content-Type", "application/xml");
+    res.status(200).send(sitemap);
+  } catch (error) {
+    console.error("Erreur sitemap:", error);
+    res.status(500).end();
+  }
+});
   return httpServer;
 }
