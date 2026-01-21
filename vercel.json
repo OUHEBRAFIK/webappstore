@@ -1,8 +1,32 @@
 {
     "version": 2,
-    "rewrites": [
-      { "source": "/api/(.*)", "destination": "/api/index" },
-      { "source": "/sitemap.xml", "destination": "/api/sitemap" },
-      { "source": "/(.*)", "destination": "/index.html" }
+    "builds": [
+      {
+        "src": "package.json",
+        "use": "@vercel/static-build",
+        "config": { "distDir": "dist" }
+      },
+      {
+        "src": "server/index.ts",
+        "use": "@vercel/node"
+      }
+    ],
+    "routes": [
+      {
+        "src": "/api/(.*)",
+        "dest": "server/index.ts"
+      },
+      {
+        "src": "/sitemap.xml",
+        "dest": "server/index.ts"
+      },
+      {
+        "src": "/assets/(.*)",
+        "dest": "client/dist/assets/$1"
+      },
+      {
+        "src": "/(.*)",
+        "dest": "/index.html"
+      }
     ]
   }
