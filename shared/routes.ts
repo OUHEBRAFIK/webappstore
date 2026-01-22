@@ -1,6 +1,6 @@
 
 import { z } from 'zod';
-import { insertAppSchema, insertReviewSchema, apps, reviews, CATEGORIES } from './schema';
+import { insertAppSchema, insertReviewSchema, apps, reviews, CATEGORIES } from './schema.js';
 
 export const errorSchemas = {
   validation: z.object({
