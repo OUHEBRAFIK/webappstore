@@ -5,7 +5,7 @@ import { storage } from "./storage.js";
 import { api } from "../shared/routes.js";
 import { z } from "zod";
 import * as cheerio from "cheerio";
-import { translateAllDescriptions } from "./translate";
+import { translateAllDescriptions } from "./translate.js";
 import { db } from "./db.js";
 import { apps } from "../shared/schema.js";
 export async function registerRoutes(
