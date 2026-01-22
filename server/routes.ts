@@ -38,8 +38,10 @@ export async function registerRoutes(
     try {
       const categories = await storage.getTopAppsByCategory(10);
       res.json({ categories });
-    } catch (e) {
-      res.status(500).json({ message: "Internal server error" });
+    } catch (e: any) {
+      // CETTE LIGNE EST CRUCIALE POUR VOIR L'ERREUR DANS VERCEL
+      console.error("ERREUR HOMEPAGE:", e.message);
+      res.status(500).json({ message: "Internal server error", details: e.message });
     }
   });
 
