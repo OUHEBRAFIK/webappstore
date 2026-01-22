@@ -1,12 +1,12 @@
 
 import { storage } from "../storage";
-import { InsertApp } from "@shared/schema";
+import { InsertApp } from "@shared/schema.js";
 
 const extraApps: InsertApp[] = [
   // Productivité
   { name: "Trello", url: "https://trello.com", category: "Productivité", description: "Tableaux, listes et cartes visuels pour organiser et hiérarchiser vos projets de manière flexible." },
   { name: "Asana", url: "https://asana.com", category: "Productivité", description: "Le moyen le plus simple pour les équipes de suivre leur travail et d'obtenir des résultats." },
-  { name: "Monday.com", url: "https://monday.com", category: "Productivity", description: "Une plateforme cloud qui permet aux équipes de créer leurs propres applications et logiciels de gestion du travail." },
+  { name: "Monday.com", url: "https://monday.com", category: "Productivité", description: "Une plateforme cloud qui permet aux équipes de créer leurs propres applications et logiciels de gestion du travail." },
   { name: "ClickUp", url: "https://clickup.com", category: "Productivité", description: "Une application pour les remplacer toutes. Gestion des tâches, documents, rappels, objectifs." },
   { name: "Evernote", url: "https://evernote.com", category: "Productivité", description: "Organisez vos notes, gérez vos tâches et archivez vos idées." },
   { name: "Todoist", url: "https://todoist.com", category: "Productivité", description: "Le gestionnaire de tâches et l'application de liste de tâches numéro 1 au monde." },
@@ -66,7 +66,7 @@ const extraApps: InsertApp[] = [
     url: "https://web.whatsapp.com", 
     category: "Réseaux Sociaux", 
     description: "Envoyez et recevez rapidement des messages WhatsApp directement depuis votre ordinateur.",
-    icon_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/WhatsApp.svg/512px-WhatsApp.svg.png?v=2"
+    iconUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/WhatsApp.svg/512px-WhatsApp.svg.png?v=2"
   },
   { name: "Telegram Web", url: "https://web.telegram.org", category: "Réseaux Sociaux", description: "Messagerie instantanée pure — simple, rapide, sécurisée et synchronisée." },
   { name: "Mastodon", url: "https://joinmastodon.org", category: "Réseaux Sociaux", description: "Réseautage social qui n'est pas à vendre. Médias sociaux décentralisés." },

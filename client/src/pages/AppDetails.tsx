@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useParams, Link } from "wouter";
-import { api, buildUrl } from "@shared/routes";
+import { api, buildUrl } from "@shared/routes.js";
 import { Star, ArrowLeft, Send, Sparkles, ExternalLink, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
