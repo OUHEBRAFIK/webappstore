@@ -1,5 +1,5 @@
 import { forwardRef } from "react";
-import { App } from "../shared/schema";
+import { App } from @shared/schema";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Star, ArrowUpRight, Trophy, Sparkles } from "lucide-react";
