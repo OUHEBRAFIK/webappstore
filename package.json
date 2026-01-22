@@ -2,11 +2,11 @@
   "name": "webappstore",
   "version": "1.0.0",
   "type": "module",
-  "scripts": {
-    "dev": "tsx server/index.ts",
-    "build": "cd client && npm run build",
-    "start": "tsx server/index.ts"
-  },
+"scripts": {
+  "dev": "vite",
+  "build": "vite build",
+  "check": "tsc"
+},
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
     "@jridgewell/trace-mapping": "^0.3.25",
