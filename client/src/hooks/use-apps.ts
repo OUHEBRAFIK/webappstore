@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { api, buildUrl, type CreateAppRequest, type RateAppRequest, type ScrapeRequest, type AdminLoginRequest } from "@shared/routes";
-import { CATEGORIES } from "@shared/schema";
+import { api, buildUrl, type CreateAppRequest, type RateAppRequest, type ScrapeRequest, type AdminLoginRequest } from "../shared/routes";
+import { CATEGORIES } from "../shared/schema";
 
 // Helper to construct query strings
 function buildQueryString(params: Record<string, any>) {

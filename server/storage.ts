@@ -6,7 +6,7 @@ import {
   type InsertApp,
   type Review,
   type InsertReview
-} from "@shared/schema.js";
+} from "../shared/schema.js";
 import { eq, sql, desc, type SQL } from "drizzle-orm";
 import { translateDescription } from "./translate";
 import type { PgColumn } from "drizzle-orm/pg-core";

@@ -1,5 +1,5 @@
 import { db } from "../db";
-import { apps } from "@shared/schema.js";
+import { apps } from "../shared/schema.js";
 import { eq } from "drizzle-orm";
 import pLimit from "p-limit";
 

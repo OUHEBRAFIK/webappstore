@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { api } from "@shared/routes.js";
+import { api } from "../shared/routes.js";
 import { AppCard } from "@/components/AppCard";
 import { SearchBar } from "@/components/SearchBar";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -7,7 +7,7 @@ import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "wouter";
 import { motion } from "framer-motion";
 import { Heart, Search, ChevronRight, ChevronLeft, Sparkles, Gamepad2, Palette, Briefcase, Code, Wrench, Users } from "lucide-react";
-import type { App } from "@shared/schema";
+import type { App } from "../shared/schema";
 
 const categoryIcons: Record<string, any> = {
   "IA": Sparkles,

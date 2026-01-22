@@ -1,6 +1,6 @@
 
 import { storage } from "../storage";
-import { InsertApp } from "@shared/schema.js";
+import { InsertApp } from "../shared/schema.js";
 
 const extraApps: InsertApp[] = [
   // Productivité

@@ -1,4 +1,4 @@
-import { CATEGORIES } from "@shared/schema";
+import { CATEGORIES } from "../shared/schema";
 import { Badge } from "@/components/ui/badge";
 import { Star } from "lucide-react";
 
