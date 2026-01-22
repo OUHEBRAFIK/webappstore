@@ -8,7 +8,7 @@ import {
   type InsertReview
 } from "../shared/schema.js";
 import { eq, sql, desc, type SQL } from "drizzle-orm";
-import { translateDescription } from "./translate";
+import { translateDescription } from "./translate.js";
 import type { PgColumn } from "drizzle-orm/pg-core";
 
 // Function to normalize text for accent-insensitive search using PostgreSQL translate

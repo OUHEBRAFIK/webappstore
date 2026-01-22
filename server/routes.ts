@@ -2,12 +2,13 @@
 import type { Express } from "express";
 import type { Server } from "http";
 import { storage } from "./storage.js";
-import { api } from "../shared/routes.js";
+import { api } from "../shared/routes.ts";
 import { z } from "zod";
 import * as cheerio from "cheerio";
 import { translateAllDescriptions } from "./translate.js";
 import { db } from "./db.js";
 import { apps } from "../shared/schema.js";
+
 export async function registerRoutes(
   httpServer: Server,
   app: Express
