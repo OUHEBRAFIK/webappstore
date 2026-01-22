@@ -1,7 +1,7 @@
 import OpenAI from "openai";
 import { storage } from "./storage.js";
 import { db } from "./db.js";
-import { apps } from "@shared/schema";
+import { apps } from "@shared/schema.js";
 import { eq } from "drizzle-orm";
 
 const openai = new OpenAI({

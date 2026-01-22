@@ -1,4 +1,4 @@
-import { db } from "./db";
+import { db } from "./db.js";
 import {
   apps,
   reviews,
@@ -6,7 +6,7 @@ import {
   type InsertApp,
   type Review,
   type InsertReview
-} from "@shared/schema";
+} from "@shared/schema.js";
 import { eq, sql, desc, type SQL } from "drizzle-orm";
 import { translateDescription } from "./translate";
 import type { PgColumn } from "drizzle-orm/pg-core";
@@ -161,8 +161,8 @@ export class DatabaseStorage implements IStorage {
       }
     }
     
-    for (const [cat, catApps] of categoryMap) {
-      if (!categoryOrder.includes(cat) && catApps.length > 0) {
+    for (const [cat, catApps] of Object.entries(categoryMap)) {
+            if (!categoryOrder.includes(cat) && catApps.length > 0) {
         result.push({
           category: cat,
           apps: catApps.slice(0, limit),
