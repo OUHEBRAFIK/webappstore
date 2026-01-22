@@ -1,13 +1,12 @@
 {
-  "name": "rest-express",
+  "name": "webappstore",
   "version": "1.0.0",
   "type": "module",
-  "license": "MIT",
-
-"scripts": {
-  "build": "cd client && npm install && npm run build",
-  "start": "tsx server/index.ts"
-},
+  "scripts": {
+    "dev": "tsx server/index.ts",
+    "build": "cd client && npm run build",
+    "start": "tsx server/index.ts"
+  },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
     "@jridgewell/trace-mapping": "^0.3.25",
