@@ -1,33 +1,26 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes.js";
-import { createServer } from "http"; // Ajout de l'import pour le serveur
+import { createServer } from "http";
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Création d'un serveur temporaire pour satisfaire registerRoutes
 const httpServer = createServer(app);
 
-app.use((req, res, next) => {
-  const start = Date.now();
-  res.on("finish", () => {
-    const duration = Date.now() - start;
-    if (res.statusCode >= 400) {
-        console.log(`${req.method} ${req.path} ${res.statusCode} in ${duration}ms`);
-    }
-  });
-  next();
-});
-
+// On attrape les erreurs au démarrage
 (async () => {
-  // ON PASSE LES DEUX ARGUMENTS ICI : httpServer et app
-  await registerRoutes(httpServer, app);
+  try {
+    console.log("Démarrage de registerRoutes...");
+    await registerRoutes(httpServer, app);
+    console.log("Routes enregistrées avec succès !");
+  } catch (error) {
+    console.error("CRASH AU DÉMARRAGE DES ROUTES:", error);
+  }
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
-    const status = err.status || err.statusCode || 500;
-    const message = err.message || "Internal Server Error";
-    res.status(status).json({ message });
+    console.error("ERREUR API:", err);
+    res.status(500).json({ message: "Internal Server Error" });
   });
 })();
 
